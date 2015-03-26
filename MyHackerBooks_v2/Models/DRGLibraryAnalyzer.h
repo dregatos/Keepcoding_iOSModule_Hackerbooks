@@ -10,10 +10,13 @@
 
 @interface DRGLibraryAnalyzer : NSObject
 
-- (NSArray *)bookListAlphabeticallyOrderedByTitle:(NSArray *)unorderedList;
+/** Returns the given 'unorderedList' sorted alphabetically */
+- (NSArray *)bookListAlphabeticallySortedByTitle:(NSArray *)unorderedList;
 
+/** Returns the full list of tags (sorted alphabetically) included on the given 'books' */
 - (NSArray *)orderedTagListForBooks:(NSArray *)books;
 
-- (NSArray *)orderedBookListForTag:(NSString *)tag onBooks:(NSArray *)books;
+/** Returns a book list (sorted alphabetically) whose tag == given 'tag' */
+- (NSArray *)orderedBookList:(NSArray *)books forTag:(NSString *)tag;
 
 @end

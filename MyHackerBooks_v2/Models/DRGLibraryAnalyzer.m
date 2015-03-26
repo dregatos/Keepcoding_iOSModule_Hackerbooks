@@ -36,8 +36,8 @@
     return orderedList;
 }
 
-- (NSArray *)orderedBookListForTag:(NSString *)tag onBooks:(NSArray *)books {
-    
+- (NSArray *)orderedBookList:(NSArray *)books forTag:(NSString *)tag {
+
     NSMutableArray *bookList = [[NSMutableArray alloc] init];
     for (DRGBook *book in books) {
         for (NSString *bookTag in book.tagList) {
