@@ -7,21 +7,44 @@
 //
 
 #import "DRGAppDelegate.h"
+#import "DRGLibrary.h"
+#import "DRGDownloadManager.h"
+#import "DRGPersistanceManager.h"
 
 @interface DRGAppDelegate ()
 
 @end
 
+NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
+
 @implementation DRGAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     
+    // Download OR Load the library
+    // NOTE: Library must be downloaded ONLY during the first launch ***
+    DRGLibrary *library;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:WAS_LAUNCHED_BEFORE]) {
+        NSLog(@"Loading library...");
+        library = [DRGPersistanceManager loadLibraryFromDocumentFolder];
+    }
     
+    if (!library) { // If the library wasn't loaded OR we weren't able to load it, then download it.
+        NSLog(@"Downloading library...");
+        library = [DRGDownloadManager downloadLibraryFromServer];
+        // Save library
+        [DRGPersistanceManager saveLibraryOnDocumentFolder:library];
+        // Download&Save books' resources
+        [DRGPersistanceManager saveResourcesOfLibrary:library];
+        // Update 'WAS_LAUNCHED_BEFORE' flag value
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:WAS_LAUNCHED_BEFORE];
+    }
     
-    
+    NSLog(@"Library description\n%@", [library description]);
     
     
     
@@ -35,6 +58,7 @@
     
     
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

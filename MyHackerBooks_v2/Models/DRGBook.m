@@ -50,28 +50,40 @@
 - (id)initWithDictionary:(NSDictionary *)aDict {
     
     return [self initWithTitle:[aDict objectForKey:@"title"]
-                       authors:[aDict objectForKey:@"authors"]
-                          tags:[aDict objectForKey:@"tags"]
+                       authors:[self extractElementsForKey:@"authors" onDictionary:aDict]
+                          tags:[self extractElementsForKey:@"tags" onDictionary:aDict]
                  coverImageURL:[NSURL URLWithString:[aDict objectForKey:@"image_url"]]
                      andPDFURL:[NSURL URLWithString:[aDict objectForKey:@"pdf_url"]]];
 }
 
 - (NSDictionary *)proxyForJSON {
     
-    return @{@"authors"   : self.authorList,
-             @"image_url" : [NSString stringWithFormat:@"%@", self.coverImageURL],
-             @"pdf_url"   : [NSString stringWithFormat:@"%@",self.PDFFileURL],
-             @"tags"      : self.tagList,
-             @"title"     : self.title
-             };
+    NSString *imString = [NSString stringWithFormat:@"%@", self.coverImageURL];
+    NSString *pdfString = [NSString stringWithFormat:@"%@",self.PDFFileURL];
+    NSString *authorString = [self.authorList componentsJoinedByString:@","];
+    NSString *tagString = [self.tagList componentsJoinedByString:@","];
+
+    return @{@"authors"   : authorString ? authorString : @"",
+             @"image_url" : imString ? imString : @"",
+             @"pdf_url"   : pdfString ? pdfString : @"",
+             @"tags"      : tagString ? tagString : @"",
+             @"title"     : self.title ? self.title : @""
+            };
 }
 
 #pragma mark - Utils
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"%@: Title: %@\nAuthors: %@\nTags: %@\nCover: %@\nPDF: %@\nisFavorite:%i",
+    return [NSString stringWithFormat:@"%@ Book |\nTitle: %@\nAuthors: %@\nTags: %@\nCover: %@\nPDF: %@\nisFavorite:%i",
             [self class], self.title, self.authorList, self.tagList, self.coverImageURL, self.PDFFileURL, self.isFavorite];
 }
 
+- (NSArray *)extractElementsForKey:(NSString *)key onDictionary:(NSDictionary *)aDict {
+    
+    NSString *elements = [aDict objectForKey:key];
+    NSArray *elementArr = [elements componentsSeparatedByString:@","];
+    
+    return elementArr;
+}
 
 @end

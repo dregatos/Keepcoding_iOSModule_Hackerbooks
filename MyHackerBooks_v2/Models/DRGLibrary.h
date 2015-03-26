@@ -12,6 +12,14 @@
 
 @interface DRGLibrary : NSObject
 
+#pragma mark - Init
+
++ (instancetype)libraryWithJSONData:(NSData *)jsonData;
+
+- (instancetype)initWithJSONData:(NSData *)jsonData;       
+
+#pragma mark - UITableViewController helpers
+
 /**
  Returns a full list of bookd ORDERED alphabetically
  */
