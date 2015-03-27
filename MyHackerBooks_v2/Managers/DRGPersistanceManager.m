@@ -84,60 +84,73 @@ NSString * const pdfFolderName = @"PDFFolder";
 + (void)saveResourcesOfLibrary:(DRGLibrary *)aLibrary {
     
     for (DRGBook *book in aLibrary.bookList) {
+        
+        /** Remove whitespace from book.title to avoid problems */
+        NSString *fileName = [book.title stringByReplacingOccurrencesOfString:@" " withString:@""];
+        NSURL *folderURL = [[self  alloc] documentsFolderURL];
+        
         // Save the cover image
         NSData *imageData = [NSData dataWithContentsOfURL:book.coverImageURL];
         UIImage *cover = [UIImage imageWithData:imageData];
-        NSURL *coverLocalURL = [[self alloc] saveImage:cover onFolderURL:[[self  alloc] documentsFolderURL] withName:book.title];
-        if (coverLocalURL) {
+        NSURL *coverLocalURL = [[self alloc] saveImage:cover
+                                           onFolderURL:folderURL
+                                              withName:fileName];
+        if (coverLocalURL) { // Save local URL
             book.coverImageURL = coverLocalURL;
         }
         
         // Save PDF
         NSData *pdfData = [NSData dataWithContentsOfURL:book.PDFFileURL];
-        NSURL *pdfLocalURL = [[self alloc] savePDF:pdfData onFolderURL:[[self  alloc] documentsFolderURL] withName:book.title];
-        if (pdfLocalURL) {
+        NSURL *pdfLocalURL = [[self alloc] savePDF:pdfData
+                                       onFolderURL:folderURL
+                                          withName:fileName];
+        if (pdfLocalURL) {  // Save local URL
             book.PDFFileURL = pdfLocalURL;
         }
     }
     
-    // Save library again, containing local URLs
+    // Save library (the NSData) again, containing local URLs
     [DRGPersistanceManager saveLibraryOnDocumentFolder:aLibrary];
 }
 
 - (NSURL *)saveImage:(UIImage *)image onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
     
+    NSError *error;
     //check if the cache directory is writable
     if ([self.fileManager isWritableFileAtPath:[folderURL path]]) {
         //check if the directory of our image is already exist
-        if ([self.fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:nil]) {
+        if ([self.fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
             //create the complete url
             NSURL *fileToWrite = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"jpg"];
             NSData *imageData = UIImageJPEGRepresentation(image, 1.);
-            if ([imageData writeToURL:fileToWrite atomically:YES]) { //atomically = safe write
+            if ([imageData writeToURL:fileToWrite options:NSDataWritingAtomic error:&error]) {
 //                NSLog(@"Image saved at URL: %@",fileToWrite);
                 return fileToWrite;
             }
         }
     }
     
+    NSLog(@"Save Cover image failed with error: %@", error);
     return nil;
 }
 
 - (NSURL *)savePDF:(NSData *)pdfData onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
     
+    NSError *error;
     //check if the cache directory is writable
     if ([self.fileManager isWritableFileAtPath:[folderURL path]]) {
         //check if the directory of our image is already exist
-        if ([self.fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:nil]) {
+        if ([self.fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
             //create the complete url
             NSURL * fileToWrite = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"pdf"];
-            if ([pdfData writeToURL:fileToWrite atomically:YES]) { //atomically = safe write
+            if ([pdfData writeToURL:fileToWrite options:NSDataWritingAtomic error:&error]) {
 //                NSLog(@"PDF saved at URL: %@",fileToWrite);
                 return fileToWrite;
             }
         }
     }
     
+    NSLog(@"Save PDF failed with error: %@", error);
     return nil;
 }
 

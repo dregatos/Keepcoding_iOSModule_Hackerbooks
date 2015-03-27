@@ -12,7 +12,7 @@
 
 @interface DRGBookVC ()
 
-@property (nonatomic, readwrite) DRGBook *model;
+@property (nonatomic, readwrite) DRGBook *book;
 
 @end
 
@@ -23,7 +23,7 @@
 - (id)initWithBook:(DRGBook *)aBook {
     
     if (self = [super init]) {
-        _model = aBook;
+        _book = aBook;
     }
     
     return self;
@@ -53,8 +53,14 @@
 
 - (IBAction)readThisBookBtnPressed:(UIButton *)sender {
     
-    NSData *pdfData = [NSData dataWithContentsOfURL:self.model.PDFFileURL];
+    NSError *error;
+    NSData *pdfData = [NSData dataWithContentsOfURL:self.book.PDFFileURL options:0 error:&error];
 
+    if (!pdfData) {
+        NSLog(@"Sorry. This book is not available.");
+        return;
+    }
+    
     DRGSimplePDFVC *pdfVC = [[DRGSimplePDFVC alloc] initWithPDF:pdfData];
     [self.navigationController pushViewController:pdfVC animated:YES];
 }
@@ -65,12 +71,17 @@
     
     self.title = @"Book Information";
     
-    self.titleLbl.text = self.model.title;
-    self.authorListLbl.text = [self.model.authorList componentsJoinedByString:@","];
-    self.tagListLbl.text = [self.model.tagList componentsJoinedByString:@","];
+    self.titleLbl.text = self.book.title;
+    self.authorListLbl.text = [self.book.authorList componentsJoinedByString:@","];
+    self.tagListLbl.text = [self.book.tagList componentsJoinedByString:@","];
     
-    NSData *coverData = [NSData dataWithContentsOfURL:self.model.coverImageURL];
+    NSError *error;
+    NSData *coverData = [NSData dataWithContentsOfURL:self.book.coverImageURL options:0 error:&error];
     UIImage *coverIm = [UIImage imageWithData:coverData];
+    
+    if (!coverIm) {
+        NSLog(@"If cover image is not available, show a placeholder cover");
+    }
     self.coverImageView.image = coverIm;
 }
 

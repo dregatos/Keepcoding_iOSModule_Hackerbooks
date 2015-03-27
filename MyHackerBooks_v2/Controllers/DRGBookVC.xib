@@ -25,7 +25,7 @@
                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A1b-sU-SLF">
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A1b-sU-SLF">
                     <rect key="frame" x="123" y="176" width="355" height="416"/>
                     <color key="backgroundColor" red="0.1529411765" green="0.76862745099999996" blue="0.68627450980000004" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
@@ -36,8 +36,7 @@
                             <exclude reference="hRz-qJ-FPv"/>
                         </mask>
                     </variation>
-                    <variation key="heightClass=regular-widthClass=regular" misplaced="YES">
-                        <rect key="frame" x="146" y="144" width="508" height="636"/>
+                    <variation key="heightClass=regular-widthClass=regular">
                         <mask key="constraints">
                             <include reference="hRz-qJ-FPv"/>
                         </mask>
@@ -96,7 +95,7 @@
                 <constraint firstItem="nwO-Ez-e6d" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" symbolic="YES" id="DRX-AC-cXn"/>
                 <constraint firstItem="J8i-0g-bg4" firstAttribute="width" secondItem="xQm-Gg-qjD" secondAttribute="width" id="I4T-Dx-s4o"/>
                 <constraint firstItem="nwO-Ez-e6d" firstAttribute="width" secondItem="xQm-Gg-qjD" secondAttribute="width" id="OGR-vu-StI"/>
-                <constraint firstItem="A1b-sU-SLF" firstAttribute="top" secondItem="ttu-3g-x7C" secondAttribute="bottom" constant="40" id="Sy3-yI-Tga"/>
+                <constraint firstItem="A1b-sU-SLF" firstAttribute="top" secondItem="ttu-3g-x7C" secondAttribute="bottom" priority="999" constant="40" id="Sy3-yI-Tga"/>
                 <constraint firstItem="Egc-fg-AYF" firstAttribute="leading" secondItem="nwO-Ez-e6d" secondAttribute="leading" id="Tjn-iM-uWa"/>
                 <constraint firstAttribute="trailing" secondItem="Egc-fg-AYF" secondAttribute="trailing" constant="30" id="UMf-d0-Afq"/>
                 <constraint firstAttribute="bottom" relation="lessThanOrEqual" secondItem="A1b-sU-SLF" secondAttribute="bottom" priority="999" constant="100" id="WbX-g2-G4l"/>

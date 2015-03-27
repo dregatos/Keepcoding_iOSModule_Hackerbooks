@@ -12,7 +12,7 @@
 
 @interface DRGBookVC : UIViewController
 
-@property (nonatomic, readonly) DRGBook *model;
+@property (nonatomic, readonly) DRGBook *book;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLbl;
 @property (weak, nonatomic) IBOutlet UILabel *authorListLbl;
