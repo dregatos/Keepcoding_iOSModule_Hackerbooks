@@ -6,11 +6,13 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+
+#import "DRGLibraryTableVC.h"
 
 @class DRGBook;
 
-@interface DRGBookVC : UIViewController
+@interface DRGBookVC : UIViewController <UISplitViewControllerDelegate,DRGLibraryTableVCDelegate>
 
 @property (nonatomic, readonly) DRGBook *book;
 

@@ -85,5 +85,26 @@
     self.coverImageView.image = coverIm;
 }
 
+#pragma mark - UISplitViewControllerDelegate
+
+- (void)splitViewController:(UISplitViewController *)svc willChangeToDisplayMode:(UISplitViewControllerDisplayMode)displayMode {
+    
+    // Is splitVC's table visible?
+    if (displayMode == UISplitViewControllerDisplayModePrimaryHidden) {
+        self.navigationItem.rightBarButtonItem = svc.displayModeButtonItem;
+        // NOTE: bar Btn item is provided by the splitVC
+    } else {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+}
+
+#pragma mark - DRGLibraryTableVCDelegate
+
+- (void)libraryTableVC:(DRGLibraryTableVC *)libraryTableVC didSelectCharacter:(DRGBook *)book {
+    
+    self.book = book;
+    [self syncViewWithModel];
+}
+
 
 @end
