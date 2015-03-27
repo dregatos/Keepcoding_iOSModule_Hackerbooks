@@ -11,7 +11,7 @@
 
 @implementation DRGLibraryAnalyzer
 
-- (NSArray *)bookListAlphabeticallyOrderedByTitle:(NSArray *)unorderedList {
++ (NSArray *)bookListAlphabeticallySortedByTitle:(NSArray *)unorderedList {
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title"
                                                                    ascending:YES
                                                                     selector:@selector(caseInsensitiveCompare:)];
@@ -19,8 +19,7 @@
     return [unorderedList sortedArrayUsingDescriptors:sortDescriptors];
 }
 
-
-- (NSArray *)orderedTagListForBooks:(NSArray *)books {
++ (NSArray *)sortedTagListForBooks:(NSArray *)books {
     
     NSMutableArray *tagList = [[NSMutableArray alloc] init];
     for (DRGBook *book in books) {
@@ -36,7 +35,7 @@
     return orderedList;
 }
 
-- (NSArray *)orderedBookList:(NSArray *)books forTag:(NSString *)tag {
++ (NSArray *)sortedBookList:(NSArray *)books forTag:(NSString *)tag {
 
     NSMutableArray *bookList = [[NSMutableArray alloc] init];
     for (DRGBook *book in books) {
@@ -47,7 +46,7 @@
         }
     }
     
-    NSArray *orderedList = [self bookListAlphabeticallyOrderedByTitle:bookList];
+    NSArray *orderedList = [[self alloc] bookListAlphabeticallySortedByTitle:bookList];
     return orderedList;
 }
 

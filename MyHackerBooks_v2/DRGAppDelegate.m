@@ -10,6 +10,7 @@
 #import "DRGLibrary.h"
 #import "DRGDownloadManager.h"
 #import "DRGPersistanceManager.h"
+#import "DRGBookVC.h"
 
 @interface DRGAppDelegate ()
 
@@ -25,6 +26,7 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
     
+    // Get our Model ***
     // Download OR Load the library
     // NOTE: Library must be downloaded ONLY during the first launch ***
     DRGLibrary *library;
@@ -46,14 +48,12 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     
     NSLog(@"Library description\n%@", [library description]);
     
+    DRGBookVC *bookVC = [[DRGBookVC alloc] initWithModel:library.bookList[10]];
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:bookVC];
     
     
-    
-    
-    
-    
-    
-    
+    self.window.rootViewController = navController;
     
     
     

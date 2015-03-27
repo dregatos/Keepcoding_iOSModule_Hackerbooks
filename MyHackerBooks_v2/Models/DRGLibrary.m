@@ -14,17 +14,11 @@
 
 @interface DRGLibrary ()
 
-@property (nonatomic, strong) DRGLibraryAnalyzer *analyzer;
 @property (nonatomic, strong) NSArray *books;             // Full list of books. Unordered
 
 @end
 
 @implementation DRGLibrary
-
-- (DRGLibraryAnalyzer *)analyzer  {
-    if  (!_analyzer) _analyzer = [[DRGLibraryAnalyzer alloc] init];
-    return _analyzer;
-}
 
 #pragma mark - Initializers
 
@@ -48,7 +42,7 @@
 #pragma mark - Public methods
 
 - (NSArray *)bookList {
-    return [self.analyzer bookListAlphabeticallyOrderedByTitle:self.books];
+    return [DRGLibraryAnalyzer bookListAlphabeticallySortedByTitle:self.books];
 }
 
 - (NSUInteger)booksCount {
@@ -56,20 +50,20 @@
 }
 
 - (NSArray *)tags {
-    return [self.analyzer orderedTagListForBooks:self.books];
+    return [DRGLibraryAnalyzer sortedTagListForBooks:self.books];
 }
 
 - (NSUInteger)bookCountForTag:(NSString *)tag {
-    NSArray *list = [self.analyzer orderedBookListForTag:tag onBooks:self.books];
+    NSArray *list = [DRGLibraryAnalyzer sortedBookList:self.books forTag:tag];
     return [list count];
 }
 
 - (NSArray *)booksForTag:(NSString *)tag {
-    return [self.analyzer orderedBookListForTag:tag onBooks:self.books];
+    return [DRGLibraryAnalyzer sortedBookList:self.books forTag:tag];
 }
 
 - (DRGBook *)bookForTag:(NSString *)tag atIndex:(NSUInteger)index {
-    NSArray *list = [self.analyzer orderedBookListForTag:tag onBooks:self.books];
+    NSArray *list = [DRGLibraryAnalyzer sortedBookList:self.books forTag:tag];
     return [list objectAtIndex:index];
 }
 
