@@ -19,6 +19,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *tagListLbl;
 @property (weak, nonatomic) IBOutlet UIImageView *coverImageView;
 
-- (id)initWithModel:(DRGBook *)aBook;
+- (id)initWithBook:(DRGBook *)aBook;
 
 @end

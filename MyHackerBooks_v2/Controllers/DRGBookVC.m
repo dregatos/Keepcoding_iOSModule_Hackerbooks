@@ -8,6 +8,7 @@
 
 #import "DRGBookVC.h"
 #import "DRGBook.h"
+#import "DRGSimplePDFVC.h"
 
 @interface DRGBookVC ()
 
@@ -19,7 +20,7 @@
 
 #pragma mark - Init
 
-- (id)initWithModel:(DRGBook *)aBook {
+- (id)initWithBook:(DRGBook *)aBook {
     
     if (self = [super init]) {
         _model = aBook;
@@ -52,12 +53,18 @@
 
 - (IBAction)readThisBookBtnPressed:(UIButton *)sender {
     
-}
+    NSData *pdfData = [NSData dataWithContentsOfURL:self.model.PDFFileURL];
 
+    DRGSimplePDFVC *pdfVC = [[DRGSimplePDFVC alloc] initWithPDF:pdfData];
+    [self.navigationController pushViewController:pdfVC animated:YES];
+}
 
 #pragma mark - Utils
 
 - (void)syncViewWithModel {
+    
+    self.title = @"Book Information";
+    
     self.titleLbl.text = self.model.title;
     self.authorListLbl.text = [self.model.authorList componentsJoinedByString:@","];
     self.tagListLbl.text = [self.model.tagList componentsJoinedByString:@","];

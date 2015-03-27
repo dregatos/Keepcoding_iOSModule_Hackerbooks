@@ -48,7 +48,7 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     
     NSLog(@"Library description\n%@", [library description]);
     
-    DRGBookVC *bookVC = [[DRGBookVC alloc] initWithModel:library.bookList[10]];
+    DRGBookVC *bookVC = [[DRGBookVC alloc] initWithBook:library.bookList[10]];
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:bookVC];
     
