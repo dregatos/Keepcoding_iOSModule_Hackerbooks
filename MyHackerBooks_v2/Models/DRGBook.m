@@ -13,6 +13,8 @@
 @property (nonatomic, readwrite) NSArray *authorList;   // Readwrite. Arr of NSStrings
 @property (nonatomic, readwrite) NSArray *tagList;      // Readwrite. Arr of NSStrings
 
+@property (nonatomic, readwrite) BOOL isFavorite;
+
 @end
 
 @implementation DRGBook
@@ -85,5 +87,10 @@
     
     return elementArr;
 }
+
+- (void)toggleFavoriteStatus {
+    self.isFavorite = !self.isFavorite;
+}
+
 
 @end

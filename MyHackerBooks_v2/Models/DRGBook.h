@@ -22,7 +22,7 @@
 @property (nonatomic, copy) NSURL *PDFFileURL;          // Copy
 
 /** Determined by the user at runtime */
-@property (nonatomic, getter = isFavorite) BOOL favorite;
+@property (nonatomic, readonly) BOOL isFavorite;
 
 #pragma mark - Factory methods
 
@@ -46,5 +46,10 @@
 - (id)initWithDictionary:(NSDictionary *)aDic;
 
 - (NSDictionary *)proxyForJSON;
+
+#pragma mark - Others
+
+- (void)toggleFavoriteStatus;
+
 
 @end

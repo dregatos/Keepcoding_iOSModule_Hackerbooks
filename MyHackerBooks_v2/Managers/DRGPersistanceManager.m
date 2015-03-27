@@ -100,13 +100,13 @@ NSString * const pdfFolderName = @"PDFFolder";
         }
         
         // Save PDF
-//        NSData *pdfData = [NSData dataWithContentsOfURL:book.PDFFileURL];
-//        NSURL *pdfLocalURL = [[self alloc] savePDF:pdfData
-//                                       onFolderURL:folderURL
-//                                          withName:fileName];
-//        if (pdfLocalURL) {  // Save local URL
-//            book.PDFFileURL = pdfLocalURL;
-//        }
+        NSData *pdfData = [NSData dataWithContentsOfURL:book.PDFFileURL];
+        NSURL *pdfLocalURL = [[self alloc] savePDF:pdfData
+                                       onFolderURL:folderURL
+                                          withName:fileName];
+        if (pdfLocalURL) {  // Save local URL
+            book.PDFFileURL = pdfLocalURL;
+        }
     }
     
     // Save library (the NSData) again, containing local URLs

@@ -81,6 +81,7 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 #pragma mark - Helpers
 
 - (DRGLibrary *)getLibrary {
+    
     // Download OR Load the library
     // NOTE: Library must be downloaded ONLY during the first launch ***
     DRGLibrary *library;
@@ -95,7 +96,7 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
         // Save library
         [DRGPersistanceManager saveLibraryOnDocumentFolder:library];
         // Download&Save books' resources
-        [DRGPersistanceManager saveResourcesOfLibrary:library];
+//        [DRGPersistanceManager saveResourcesOfLibrary:library];
         // Update 'WAS_LAUNCHED_BEFORE' flag value
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:WAS_LAUNCHED_BEFORE];
     }

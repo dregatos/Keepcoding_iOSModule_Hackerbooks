@@ -65,6 +65,12 @@
     [self.navigationController pushViewController:pdfVC animated:YES];
 }
 
+- (IBAction)favoriteBtnPressed:(UIButton *)sender {
+    
+    [self.book toggleFavoriteStatus];
+    [self syncViewWithModel];
+}
+
 #pragma mark - Utils
 
 - (void)syncViewWithModel {
@@ -83,6 +89,8 @@
         NSLog(@"If cover image is not available, show a placeholder cover");
     }
     self.coverImageView.image = coverIm;
+    
+    self.favoriteBtn.selected = self.book.isFavorite;
 }
 
 #pragma mark - UISplitViewControllerDelegate
