@@ -10,6 +10,9 @@
 #import "DRGBook.h"
 #import "DRGSimplePDFVC.h"
 
+#import "DRGBookVCDelegate.h"
+#import "DRGLibraryTableVCDelegate.h"
+
 @interface DRGBookVC ()
 
 @property (nonatomic, readwrite) DRGBook *book;
@@ -69,6 +72,11 @@
     
     [self.book toggleFavoriteStatus];
     [self syncViewWithModel];
+    
+    // Talk with the delegate, if it implements the method
+    if ([self.delegate respondsToSelector:@selector(bookVC:didFavoriteABook:)]) {
+        [self.delegate bookVC:self didFavoriteABook:self.book];
+    }
 }
 
 #pragma mark - Utils
@@ -100,7 +108,7 @@
     // Is splitVC's table visible?
     if (displayMode == UISplitViewControllerDisplayModePrimaryHidden) {
         self.navigationItem.rightBarButtonItem = svc.displayModeButtonItem;
-        // NOTE: bar Btn item is provided by the splitVC
+        // NOTE: BarBtn item is provided by the splitVC
     } else {
         self.navigationItem.rightBarButtonItem = nil;
     }

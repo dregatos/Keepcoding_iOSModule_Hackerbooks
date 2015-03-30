@@ -46,8 +46,22 @@
         }
     }
     
-    NSArray *orderedList = [[self alloc] bookListAlphabeticallySortedByTitle:bookList];
+    NSArray *orderedList = [DRGLibraryAnalyzer bookListAlphabeticallySortedByTitle:bookList];
     return orderedList;
 }
+
++ (NSArray *)sortedFavoriteBookList:(NSArray *)books {
+    
+    NSMutableArray *bookList = [[NSMutableArray alloc] init];
+    for (DRGBook *book in books) {
+        if (book.isFavorite) {
+            [bookList addObject:book];
+        }
+    }
+    
+    NSArray *orderedList = [DRGLibraryAnalyzer bookListAlphabeticallySortedByTitle:bookList];
+    return orderedList;
+}
+
 
 @end

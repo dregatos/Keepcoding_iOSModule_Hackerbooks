@@ -18,36 +18,53 @@
 
 - (instancetype)initWithJSONData:(NSData *)jsonData;       
 
+
 #pragma mark - UITableViewController helpers
 
+/** 
+    Marks given book as favorite, updates the library and 
+    returns the updated library.
+ */
+- (DRGLibrary *)markBookAsFavorite:(DRGBook *)aBook;
+
 /**
- Returns a full list of bookd ORDERED alphabetically
+    Returns a full list of books ORDERED alphabetically
  */
 - (NSArray *)bookList;
 
 /**
- Returns the number of books in the library
+    Returns the number of books in the library
  */
 - (NSUInteger)booksCount;
 
 /**
- Returns an ordered list (alphabetically) of the full tag list
+ Returns a list of favorite books ORDERED alphabetically
+ */
+- (NSArray *)favoriteBookList;
+
+/**
+ Returns the number of favorite books in the library
+ */
+- (NSUInteger)favoriteBooksCount;
+
+/**
+    Returns an ordered list (alphabetically) of the full tag list
  */
 - (NSArray *)tags;
 
 /**
- Returns the number of books for a given 'tag'
+    Returns the number of books for a given 'tag'
  */
 - (NSUInteger)bookCountForTag:(NSString *)tag;
 
 /**
- Returns an ordered list (alphabetically) of books for a given 'tag'
+    Returns an ordered list (alphabetically) of books for a given 'tag'
  */
 - (NSArray *)booksForTag:(NSString *)tag;
 
 /**
- Returns the book at given index of the ordered list (alphabetically)
- of books for a given 'tag'
+    Returns the book at given index of the ordered list (alphabetically)
+    of books for a given 'tag'
  */
 - (DRGBook *)bookForTag:(NSString *)tag atIndex:(NSUInteger)index;
 

@@ -12,20 +12,15 @@
 @class DRGLibrary;
 @class DRGLibraryTableVC;
 
-#pragma mark - Protocol
+#import "DRGLibraryTableVCDelegate.h"
+#import "DRGBookVCDelegate.h"
 
-@protocol DRGLibraryTableVCDelegate <NSObject>
+@interface DRGLibraryTableVC : UITableViewController <DRGBookVCDelegate>
 
-@optional
-- (void)libraryTableVC:(DRGLibraryTableVC *)libraryTableVC didSelectCharacter:(DRGBook *)book;
-
-@end
-
-
-@interface DRGLibraryTableVC : UITableViewController
+// delegate
+@property (nonatomic, weak) id<DRGLibraryTableVCDelegate> delegate;
 
 @property (nonatomic, strong) DRGLibrary *library;
-@property (nonatomic, weak) id<DRGLibraryTableVCDelegate> delegate;
 
 - (id)initWithLibrary:(DRGLibrary *)aLibrary style:(UITableViewStyle)style;
 

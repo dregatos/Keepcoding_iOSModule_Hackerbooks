@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import "DRGAppDelegate.h"
+#import "AppDelegate.h"
 
 #import "DRGLibrary.h"
 #import "DRGDownloadManager.h"
@@ -15,13 +15,13 @@
 #import "DRGBookVC.h"
 #import "DRGLibraryTableVC.h"
 
-@interface DRGAppDelegate ()
+@interface AppDelegate ()
 
 @end
 
 NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 
-@implementation DRGAppDelegate
+@implementation AppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -49,6 +49,7 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     /** Assign delegates */
     splitVC.delegate = bookVC;
     tableVC.delegate = bookVC;
+    bookVC.delegate = tableVC;
 
     self.window.rootViewController = splitVC;
     [self.window makeKeyAndVisible];

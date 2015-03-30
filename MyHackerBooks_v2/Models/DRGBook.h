@@ -22,7 +22,7 @@
 @property (nonatomic, copy) NSURL *PDFFileURL;          // Copy
 
 /** Determined by the user at runtime */
-@property (nonatomic, readonly) BOOL isFavorite;
+@property (nonatomic, readonly) BOOL isFavorite;        // Readonly. User toggleFavoriteStatus: to change it
 
 #pragma mark - Factory methods
 
@@ -30,7 +30,8 @@
                       authors:(NSArray *)authorList
                          tags:(NSArray *)tagList
                 coverImageURL:(NSURL *)coverURL
-                    andPDFURL:(NSURL *)PDFURL;
+                    andPDFURL:(NSURL *)PDFURL
+                andIsFavorite:(BOOL)isFavorite;
 
 #pragma mark - Initializers
 
@@ -38,7 +39,8 @@
             authors:(NSArray *)authorList
                tags:(NSArray *)tagList
       coverImageURL:(NSURL *)coverURL
-          andPDFURL:(NSURL *)PDFURL;
+          andPDFURL:(NSURL *)PDFURL
+      andIsFavorite:(BOOL)isFavorite;
 
 
 #pragma mark - JSON

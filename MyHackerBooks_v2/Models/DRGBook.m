@@ -25,16 +25,18 @@
                       authors:(NSArray *)authorList
                          tags:(NSArray *)tagList
                 coverImageURL:(NSURL *)coverURL
-                    andPDFURL:(NSURL *)PDFURL {
+                    andPDFURL:(NSURL *)PDFURL
+                andIsFavorite:(BOOL)isFavorite {
     
-    return [[self alloc] initWithTitle:title authors:authorList tags:tagList coverImageURL:coverURL andPDFURL:PDFURL];
+    return [[self alloc] initWithTitle:title authors:authorList tags:tagList coverImageURL:coverURL PDFURL:PDFURL andIsFavorite:isFavorite];
 }
 
 - (id)initWithTitle:(NSString *)title
             authors:(NSArray *)authorList
                tags:(NSArray *)tagList
       coverImageURL:(NSURL *)coverURL
-          andPDFURL:(NSURL *)PDFURL {
+             PDFURL:(NSURL *)PDFURL
+      andIsFavorite:(BOOL)isFavorite {
     
     if (self = [super init]) {
         _title = title;
@@ -42,6 +44,7 @@
         _tagList = tagList;
         _coverImageURL = coverURL;
         _PDFFileURL = PDFURL;
+        _isFavorite = isFavorite;
     }
     
     return self;
@@ -55,7 +58,8 @@
                        authors:[self extractElementsForKey:@"authors" onDictionary:aDict]
                           tags:[self extractElementsForKey:@"tags" onDictionary:aDict]
                  coverImageURL:[NSURL URLWithString:[aDict objectForKey:@"image_url"]]
-                     andPDFURL:[NSURL URLWithString:[aDict objectForKey:@"pdf_url"]]];
+                        PDFURL:[NSURL URLWithString:[aDict objectForKey:@"pdf_url"]]
+                 andIsFavorite:[[aDict objectForKey:@"favorite"] boolValue]];
 }
 
 - (NSDictionary *)proxyForJSON {
@@ -69,11 +73,21 @@
              @"image_url" : imString ? imString : @"",
              @"pdf_url"   : pdfString ? pdfString : @"",
              @"tags"      : tagString ? tagString : @"",
-             @"title"     : self.title ? self.title : @""
+             @"title"     : self.title ? self.title : @"",
+             @"favorite"  : @(self.isFavorite)
             };
 }
 
 #pragma mark - Utils
+
+- (BOOL)isEqual:(id)object {
+    
+    if ([object isKindOfClass:[self class]]) {
+        return [self.title isEqualToString:((DRGBook *)object).title];
+    }
+    
+    return NO;
+}
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"%@ Book |\nTitle: %@\nAuthors: %@\nTags: %@\nCover: %@\nPDF: %@\nisFavorite:%i",

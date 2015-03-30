@@ -19,4 +19,7 @@
 /** Returns a book list (sorted alphabetically) whose tag == given 'tag' */
 + (NSArray *)sortedBookList:(NSArray *)books forTag:(NSString *)tag;
 
+/** Returns a book list /sorted alphabetically) containing all the books selected as 'favorite' */
++ (NSArray *)sortedFavoriteBookList:(NSArray *)books;
+
 @end

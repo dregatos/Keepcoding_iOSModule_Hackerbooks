@@ -9,6 +9,12 @@
 #import "DRGLibraryTableVC.h"
 #import "DRGLibrary.h"
 #import "DRGBook.h"
+#import "DRGPersistanceManager.h"
+
+//#import "DRGLibraryTableVCDelegate.h"
+//#import "DRGBookVCDelegate.h"
+
+#define FAVORITE_SECTION_INDEX 0
 
 @interface DRGLibraryTableVC ()
 
@@ -33,11 +39,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -49,14 +50,17 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return 1;
+    return [[self.library tags] count]+1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return [self.library booksCount];
+    if (section == FAVORITE_SECTION_INDEX) {
+        return [self.library favoriteBooksCount];
+    } else {
+        return [self.library bookCountForTag:[self tagAtIndex:section-1]];
+    }
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -91,11 +95,39 @@
     // Notify the change
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == FAVORITE_SECTION_INDEX) {
+        return @" Favorites";
+    } else {
+        return [self tagAtIndex:section-1];
+    }
+}
 
 #pragma mark - Helpers
 
 - (DRGBook *)bookAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.library.bookList objectAtIndex:indexPath.row];
+    
+    if (indexPath.section == FAVORITE_SECTION_INDEX) {
+        // Favorite section
+        return [[self.library favoriteBookList] objectAtIndex:indexPath.row];
+    }
+    // For section != than favorite one
+    return [self.library bookForTag:[self tagAtIndex:indexPath.section-1] atIndex:indexPath.row];
+}
+
+- (NSString *)tagAtIndex:(NSUInteger)index {
+    return [[self.library tags] objectAtIndex:index];
+}
+
+#pragma mark - DRGBookVCDelegate
+
+- (void)bookVC:(DRGBookVC *)aBookVC didFavoriteABook:(DRGBook *)aBook {
+    
+    self.library = [self.library markBookAsFavorite:aBook];
+    [self.tableView reloadData];
+    
+    // Save library
+    [DRGPersistanceManager saveLibraryOnDocumentFolder:self.library];
 }
 
 

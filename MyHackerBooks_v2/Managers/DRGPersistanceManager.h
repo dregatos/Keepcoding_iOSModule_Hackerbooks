@@ -16,7 +16,7 @@
 /** Returns YES if saving process success */
 + (BOOL)saveLibraryOnDocumentFolder:(DRGLibrary *)aLibrary;
 
-/** Returns the library stored on the Documents folder */
+/** Fetchs the library stored on the Documents folder */
 + (DRGLibrary *)loadLibraryFromDocumentFolder;
 
 /** 

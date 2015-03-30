@@ -41,12 +41,36 @@
 
 #pragma mark - Public methods
 
+- (DRGLibrary *)markBookAsFavorite:(DRGBook *)aBook {
+    
+    if ([self.books containsObject:aBook]) {
+        
+        NSMutableArray *mList = [self.books mutableCopy];
+        NSUInteger index = [mList indexOfObject:aBook];
+        [mList replaceObjectAtIndex:index withObject:aBook];
+        
+        self.books = [mList copy];
+    }
+    
+    return self;
+}
+
+
 - (NSArray *)bookList {
     return [DRGLibraryAnalyzer bookListAlphabeticallySortedByTitle:self.books];
 }
 
 - (NSUInteger)booksCount {
     return [self.books count];
+}
+
+- (NSArray *)favoriteBookList {
+    return [DRGLibraryAnalyzer sortedFavoriteBookList:self.books];
+}
+
+- (NSUInteger)favoriteBooksCount {
+    NSArray *list = [DRGLibraryAnalyzer sortedFavoriteBookList:self.books];
+    return [list count];
 }
 
 - (NSArray *)tags {
