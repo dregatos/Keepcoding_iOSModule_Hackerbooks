@@ -41,7 +41,7 @@
 
 #pragma mark - Public methods
 
-- (DRGLibrary *)markBookAsFavorite:(DRGBook *)aBook {
+- (DRGLibrary *)didUpdateBookContent:(DRGBook *)aBook {
     
     if ([self.books containsObject:aBook]) {
         
@@ -54,7 +54,6 @@
     
     return self;
 }
-
 
 - (NSArray *)bookList {
     return [DRGLibraryAnalyzer bookListAlphabeticallySortedByTitle:self.books];

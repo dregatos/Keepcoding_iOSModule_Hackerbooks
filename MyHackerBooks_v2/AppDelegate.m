@@ -49,7 +49,6 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     /** Assign delegates */
     splitVC.delegate = bookVC;
     tableVC.delegate = bookVC;
-    bookVC.delegate = tableVC;
 
     self.window.rootViewController = splitVC;
     [self.window makeKeyAndVisible];

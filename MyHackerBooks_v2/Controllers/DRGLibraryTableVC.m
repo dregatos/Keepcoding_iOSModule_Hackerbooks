@@ -10,9 +10,7 @@
 #import "DRGLibrary.h"
 #import "DRGBook.h"
 #import "DRGPersistanceManager.h"
-
-//#import "DRGLibraryTableVCDelegate.h"
-//#import "DRGBookVCDelegate.h"
+#import "NotificationKeys.h"
 
 #define FAVORITE_SECTION_INDEX 0
 
@@ -34,11 +32,49 @@
     return self;
 }
 
+#pragma mark - Notification
+
+- (void)dealloc {
+    [self unregisterForNotifications];
+}
+
+- (void)registerForNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyBookDidChange:) name:BOOK_DID_CHANGE_NOTIFICATION_NAME object:nil];
+}
+
+- (void)unregisterForNotifications {
+    // Clear out _all_ observations that this object was making
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)notifyBookDidChange:(NSNotification *)notification {
+    
+    // Get updated book
+    DRGBook *updatedBook = notification.userInfo[BOOK_KEY];
+    
+    self.library = [self.library didUpdateBookContent:updatedBook];
+    [self.tableView reloadData];
+    
+    // Save library
+    [DRGPersistanceManager saveLibraryOnDocumentFolder:self.library];
+}
+
 #pragma mark - Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // Notifications **********************
+    [self registerForNotifications];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [self unregisterForNotifications];   //optionally we can unregister a notification when the view disappears
 }
 
 - (void)didReceiveMemoryWarning {
@@ -90,9 +126,7 @@
     // Talk with the delegate, if it implements the method
     if ([self.delegate respondsToSelector:@selector(libraryTableVC:didSelectCharacter:)]) {
         [self.delegate libraryTableVC:self didSelectCharacter:book];
-    }
-    
-    // Notify the change
+    }    
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -118,17 +152,5 @@
 - (NSString *)tagAtIndex:(NSUInteger)index {
     return [[self.library tags] objectAtIndex:index];
 }
-
-#pragma mark - DRGBookVCDelegate
-
-- (void)bookVC:(DRGBookVC *)aBookVC didFavoriteABook:(DRGBook *)aBook {
-    
-    self.library = [self.library markBookAsFavorite:aBook];
-    [self.tableView reloadData];
-    
-    // Save library
-    [DRGPersistanceManager saveLibraryOnDocumentFolder:self.library];
-}
-
 
 @end

@@ -9,9 +9,7 @@
 #import "DRGBookVC.h"
 #import "DRGBook.h"
 #import "DRGSimplePDFVC.h"
-
-#import "DRGBookVCDelegate.h"
-#import "DRGLibraryTableVCDelegate.h"
+#import "NotificationKeys.h"
 
 @interface DRGBookVC ()
 
@@ -73,10 +71,9 @@
     [self.book toggleFavoriteStatus];
     [self syncViewWithModel];
     
-    // Talk with the delegate, if it implements the method
-    if ([self.delegate respondsToSelector:@selector(bookVC:didFavoriteABook:)]) {
-        [self.delegate bookVC:self didFavoriteABook:self.book];
-    }
+    // notify change to our model
+    NSDictionary *dict = @{BOOK_KEY:self.book};
+    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_DID_CHANGE_NOTIFICATION_NAME object:self userInfo:dict];
 }
 
 #pragma mark - Utils
@@ -117,7 +114,6 @@
 #pragma mark - DRGLibraryTableVCDelegate
 
 - (void)libraryTableVC:(DRGLibraryTableVC *)libraryTableVC didSelectCharacter:(DRGBook *)book {
-    
     self.book = book;
     [self syncViewWithModel];
 }

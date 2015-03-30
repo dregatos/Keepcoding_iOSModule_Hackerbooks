@@ -19,11 +19,4 @@
 /** Fetchs the library stored on the Documents folder */
 + (DRGLibrary *)loadLibraryFromDocumentFolder;
 
-/** 
-    This method download and save each book's cover and pdf file on Documents.
-    It takes a while, freezing the app because (for now) we are doing this
-    process on the main thread.
- */
-+ (void)saveResourcesOfLibrary:(DRGLibrary *)aLibrary;
-
 @end

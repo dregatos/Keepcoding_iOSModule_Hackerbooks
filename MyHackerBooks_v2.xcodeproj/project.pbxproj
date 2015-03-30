@@ -66,8 +66,8 @@
 		077DFEC21AC4434600EE845B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		07E6C3CD1AC5E7F10061FCFA /* DRGLibraryTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGLibraryTableVC.h; sourceTree = "<group>"; };
 		07E6C3CE1AC5E7F10061FCFA /* DRGLibraryTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGLibraryTableVC.m; sourceTree = "<group>"; };
-		07E6C3D21AC5EF200061FCFA /* DRGBookVCDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGBookVCDelegate.h; sourceTree = "<group>"; };
 		07E6C3D31AC5EFC40061FCFA /* DRGLibraryTableVCDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGLibraryTableVCDelegate.h; sourceTree = "<group>"; };
+		07E6C3D51AC943AF0061FCFA /* NotificationKeys.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationKeys.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +94,6 @@
 				07E6C3D31AC5EFC40061FCFA /* DRGLibraryTableVCDelegate.h */,
 				07E6C3CD1AC5E7F10061FCFA /* DRGLibraryTableVC.h */,
 				07E6C3CE1AC5E7F10061FCFA /* DRGLibraryTableVC.m */,
-				07E6C3D21AC5EF200061FCFA /* DRGBookVCDelegate.h */,
 				070ECE381AC5BEB60040E672 /* DRGBookVC.h */,
 				070ECE391AC5BEB60040E672 /* DRGBookVC.m */,
 				071AB7F51AC54C1000AAAC78 /* DRGBookVC.xib */,
@@ -126,6 +125,7 @@
 		0757280F1AC414D000B2FB85 /* MyHackerBooks_v2 */ = {
 			isa = PBXGroup;
 			children = (
+				07E6C3D51AC943AF0061FCFA /* NotificationKeys.h */,
 				077DFEC11AC4434600EE845B /* AppDelegate.h */,
 				077DFEC21AC4434600EE845B /* AppDelegate.m */,
 				075728171AC414D000B2FB85 /* Images.xcassets */,

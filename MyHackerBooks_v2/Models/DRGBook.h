@@ -39,7 +39,7 @@
             authors:(NSArray *)authorList
                tags:(NSArray *)tagList
       coverImageURL:(NSURL *)coverURL
-          andPDFURL:(NSURL *)PDFURL
+             PDFURL:(NSURL *)PDFURL
       andIsFavorite:(BOOL)isFavorite;
 
 

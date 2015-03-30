@@ -12,12 +12,8 @@
 @class DRGBookVC;
 
 #import "DRGLibraryTableVCDelegate.h"
-#import "DRGBookVCDelegate.h"
 
 @interface DRGBookVC : UIViewController <UISplitViewControllerDelegate,DRGLibraryTableVCDelegate>
-
-// delegate
-@property (nonatomic, weak) id<DRGBookVCDelegate> delegate;
 
 @property (nonatomic, readonly) DRGBook *book;
 

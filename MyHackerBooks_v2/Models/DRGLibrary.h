@@ -18,14 +18,14 @@
 
 - (instancetype)initWithJSONData:(NSData *)jsonData;       
 
+/**
+     Updates given book info, if it belongs to our library and
+     returns the updated library.
+ */
+- (DRGLibrary *)didUpdateBookContent:(DRGBook *)aBook;
+
 
 #pragma mark - UITableViewController helpers
-
-/** 
-    Marks given book as favorite, updates the library and 
-    returns the updated library.
- */
-- (DRGLibrary *)markBookAsFavorite:(DRGBook *)aBook;
 
 /**
     Returns a full list of books ORDERED alphabetically

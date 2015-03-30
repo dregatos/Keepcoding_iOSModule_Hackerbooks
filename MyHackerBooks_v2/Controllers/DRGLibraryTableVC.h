@@ -13,9 +13,8 @@
 @class DRGLibraryTableVC;
 
 #import "DRGLibraryTableVCDelegate.h"
-#import "DRGBookVCDelegate.h"
 
-@interface DRGLibraryTableVC : UITableViewController <DRGBookVCDelegate>
+@interface DRGLibraryTableVC : UITableViewController
 
 // delegate
 @property (nonatomic, weak) id<DRGLibraryTableVCDelegate> delegate;
