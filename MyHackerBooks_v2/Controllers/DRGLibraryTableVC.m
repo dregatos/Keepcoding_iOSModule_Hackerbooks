@@ -131,7 +131,11 @@
     // Talk with the delegate, if it implements the method
     if ([self.delegate respondsToSelector:@selector(libraryTableVC:didSelectCharacter:)]) {
         [self.delegate libraryTableVC:self didSelectCharacter:book];
-    }    
+    }
+    
+    // Notify BOOK was selected
+    NSDictionary *dict = @{BOOK_KEY:book};
+    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_WAS_SELECTED_NOTIFICATION_NAME object:self userInfo:dict];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {

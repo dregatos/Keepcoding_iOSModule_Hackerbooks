@@ -103,15 +103,7 @@
 
 - (IBAction)readThisBookBtnPressed:(UIButton *)sender {
     
-    NSError *error;
-    NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book ofLibrary:self.library];
-
-    if (!pdfData) {
-        NSLog(@"Sorry. This book is not available.");
-        return;
-    }
-    
-    DRGSimplePDFVC *pdfVC = [[DRGSimplePDFVC alloc] initWithPDF:pdfData];
+    DRGSimplePDFVC *pdfVC = [[DRGSimplePDFVC alloc] initWithBook:self.book];
     [self.navigationController pushViewController:pdfVC animated:YES];
 }
 

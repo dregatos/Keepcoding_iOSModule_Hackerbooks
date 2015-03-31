@@ -10,10 +10,12 @@
 
 @class DRGBook;
 
-@interface DRGSimplePDFVC : UIViewController
+@interface DRGSimplePDFVC : UIViewController <UIWebViewDelegate>
 
-@property (nonatomic, readonly) NSData *pdf;
+@property (nonatomic, readonly) DRGBook *book;
 
-- (id)initWithPDF:(NSData *)pdfData;
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
+
+- (id)initWithBook:(DRGBook *)aBook;
 
 @end
