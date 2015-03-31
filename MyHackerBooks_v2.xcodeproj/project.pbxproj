@@ -22,6 +22,8 @@
 		075728561AC432D000B2FB85 /* DRGPersistanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 075728551AC432D000B2FB85 /* DRGPersistanceManager.m */; };
 		075728591AC438D500B2FB85 /* DRGDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 075728581AC438D500B2FB85 /* DRGDownloadManager.m */; };
 		077DFEC31AC4434600EE845B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 077DFEC21AC4434600EE845B /* AppDelegate.m */; };
+		07A8C8891ACAF8E7009EBA93 /* DRGBookViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A8C8871ACAF8E7009EBA93 /* DRGBookViewCell.m */; };
+		07A8C88A1ACAF8E7009EBA93 /* DRGBookViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07A8C8881ACAF8E7009EBA93 /* DRGBookViewCell.xib */; };
 		07E6C3CF1AC5E7F10061FCFA /* DRGLibraryTableVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E6C3CE1AC5E7F10061FCFA /* DRGLibraryTableVC.m */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +66,9 @@
 		075728581AC438D500B2FB85 /* DRGDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGDownloadManager.m; sourceTree = "<group>"; };
 		077DFEC11AC4434600EE845B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		077DFEC21AC4434600EE845B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		07A8C8861ACAF8E7009EBA93 /* DRGBookViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGBookViewCell.h; sourceTree = "<group>"; };
+		07A8C8871ACAF8E7009EBA93 /* DRGBookViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGBookViewCell.m; sourceTree = "<group>"; };
+		07A8C8881ACAF8E7009EBA93 /* DRGBookViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DRGBookViewCell.xib; sourceTree = "<group>"; };
 		07E6C3CD1AC5E7F10061FCFA /* DRGLibraryTableVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGLibraryTableVC.h; sourceTree = "<group>"; };
 		07E6C3CE1AC5E7F10061FCFA /* DRGLibraryTableVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGLibraryTableVC.m; sourceTree = "<group>"; };
 		07E6C3D31AC5EFC40061FCFA /* DRGLibraryTableVCDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGLibraryTableVCDelegate.h; sourceTree = "<group>"; };
@@ -132,6 +137,7 @@
 				075728191AC414D000B2FB85 /* LaunchScreen.xib */,
 				075728501AC4329300B2FB85 /* Managers */,
 				075728391AC423E500B2FB85 /* Models */,
+				07A8C8801ACAEF36009EBA93 /* Views */,
 				071AB7F11AC5498300AAAC78 /* Controllers */,
 				075728101AC414D000B2FB85 /* Supporting Files */,
 			);
@@ -188,6 +194,16 @@
 				075728551AC432D000B2FB85 /* DRGPersistanceManager.m */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		07A8C8801ACAEF36009EBA93 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				07A8C8861ACAF8E7009EBA93 /* DRGBookViewCell.h */,
+				07A8C8871ACAF8E7009EBA93 /* DRGBookViewCell.m */,
+				07A8C8881ACAF8E7009EBA93 /* DRGBookViewCell.xib */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,6 +290,7 @@
 				071AB7F61AC54C1000AAAC78 /* DRGBookDetailVC.xib in Resources */,
 				071AB7FB1AC5613D00AAAC78 /* DRGSimplePDFVC.xib in Resources */,
 				0757281B1AC414D000B2FB85 /* LaunchScreen.xib in Resources */,
+				07A8C88A1ACAF8E7009EBA93 /* DRGBookViewCell.xib in Resources */,
 				075728181AC414D000B2FB85 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -293,6 +310,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				075728591AC438D500B2FB85 /* DRGDownloadManager.m in Sources */,
+				07A8C8891ACAF8E7009EBA93 /* DRGBookViewCell.m in Sources */,
 				075728451AC4259C00B2FB85 /* DRGBook.m in Sources */,
 				071AB7FA1AC5613D00AAAC78 /* DRGSimplePDFVC.m in Sources */,
 				070ECE3C1AC5BEB60040E672 /* DRGBookDetailVC.m in Sources */,

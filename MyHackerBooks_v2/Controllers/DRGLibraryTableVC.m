@@ -13,11 +13,15 @@
 #import "DRGLibrary.h"
 #import "DRGBook.h"
 
+#import "DRGBookViewCell.h"
+
 #define FAVORITE_SECTION_INDEX 0
 
 @interface DRGLibraryTableVC ()
 
 @end
+
+NSString * const CustomCell = @"CustomCell";
 
 @implementation DRGLibraryTableVC
 
@@ -67,6 +71,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Register custom cell
+    [self.tableView registerNib:[UINib nibWithNibName:@"DRGBookViewCell" bundle:nil] forCellReuseIdentifier:CustomCell];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -109,14 +115,26 @@
     DRGBook *book = [self bookAtIndexPath:indexPath];
     
     // Create standard cell
+    /*
     static NSString *cellId = @"BookCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
     }
+     */
+    
+    // Custom Cell
+    DRGBookViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CustomCell];
+    if(cell == nil) {
+        cell = [[DRGBookViewCell alloc] init];
+    }
+    
+    // NOTE: If you are using forCellReuseIdentifier: don't forget to register your cell before using it
+    // [self.tableView registerNib:[UINib nibWithNibName:@"myCustomCell" bundle:nil] forCellReuseIdentifier:@"myCustomCell"];
+    // OR to set the "Identifier" of the custom cell in the Storyboard (see Attributes Inspector of your custom cell)
     
     // Configure the cell...
-    cell.textLabel.text = book.title;
+    cell.bookTitle.text = book.title;
     
     return cell;
 }
@@ -144,6 +162,10 @@
     } else {
         return [self tagAtIndex:section-1];
     }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 60.f;
 }
 
 #pragma mark - Helpers
