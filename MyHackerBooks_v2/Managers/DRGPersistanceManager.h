@@ -32,4 +32,10 @@
 
 #pragma mark - PDF files cache
 
+/** Returns local URL when the image was saved. If 'nil' then it was an error... */
++ (NSURL *)savePDFFile:(NSData *)pdfData ofBook:(DRGBook *)aBook;
+
+/**  */
++ (NSData *)loadPDFFileOfBook:(DRGBook *)aBook;
+
 @end

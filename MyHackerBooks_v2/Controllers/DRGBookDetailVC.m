@@ -104,7 +104,7 @@
 - (IBAction)readThisBookBtnPressed:(UIButton *)sender {
     
     NSError *error;
-    NSData *pdfData = [NSData dataWithContentsOfURL:self.book.PDFFileURL options:0 error:&error];
+    NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book ofLibrary:self.library];
 
     if (!pdfData) {
         NSLog(@"Sorry. This book is not available.");

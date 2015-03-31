@@ -50,6 +50,29 @@
     }
 }
 
+#pragma mark - PDF files
+
++ (NSData *)downloadPDFForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary {
+    
+    if ([aBook.PDFFileURL isFileURL]) {
+        // If cover image was stored on disk, then return it.
+        return [DRGPersistanceManager loadPDFFileOfBook:aBook];
+        
+    } else {
+        // If not, download & save it into disk.
+        NSData *pdfData = [NSData dataWithContentsOfURL:aBook.PDFFileURL];
+        NSURL *pdfLocalURL = [DRGPersistanceManager savePDFFile:pdfData ofBook:aBook];
+        if (pdfLocalURL) { // local URL
+            // Update book info
+            [aBook updatePDFFileURL:pdfLocalURL];
+            // Update my library
+            [aLibrary didUpdateBookContent:aBook];
+        }
+        
+        return pdfData;
+    }
+}
+
 #pragma mark - Helpers
 
 + (NSData *)downloadJSONFromURL:(NSURL *)jsonURL {
@@ -66,7 +89,5 @@
     
     return data;
 }
-
-
 
 @end

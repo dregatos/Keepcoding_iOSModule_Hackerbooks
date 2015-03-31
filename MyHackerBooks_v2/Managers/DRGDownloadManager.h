@@ -26,8 +26,21 @@
     2. is not stored on disk, then download, store it,
     and UPDATE the library.
  
-    Filename of stored is = book's title without whitespaces
+    Filename of stored image is = book's title without whitespaces
  */
 + (UIImage *)downloadCoverImageForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary;
+
+/**
+    If requested PDF file:
+
+    1. was previously download & stored, then it
+    returns the local copy.
+
+    2. is not stored on disk, then download, store it,
+    and UPDATE the library.
+
+    Filename of stored PDF file is = book's title without whitespaces
+ */
++ (NSData *)downloadPDFForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary;
 
 @end

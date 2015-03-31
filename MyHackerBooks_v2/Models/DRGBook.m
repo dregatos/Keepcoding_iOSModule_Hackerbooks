@@ -84,6 +84,10 @@
     self.coverImageURL = newURL;
 }
 
+- (void)updatePDFFileURL:(NSURL *)newURL {
+    self.PDFFileURL = newURL;
+}
+
 #pragma mark - Utils
 
 - (BOOL)isEqual:(id)object {

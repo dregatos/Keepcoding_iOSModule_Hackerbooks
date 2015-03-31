@@ -56,4 +56,6 @@
 
 - (void)updateCoverImageURL:(NSURL *)newURL;
 
+- (void)updatePDFFileURL:(NSURL *)newURL;
+
 @end

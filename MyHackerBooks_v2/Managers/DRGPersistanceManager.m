@@ -41,7 +41,7 @@ NSString * const pdfFolderName = @"PDFFolder";
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    
+
     NSURL *newURL = [documentsURL URLByAppendingPathComponent:[storedLocalURL lastPathComponent] isDirectory:NO];
     
 //    NSLog(@"New local path: %@", [newURL absoluteString]);
@@ -49,7 +49,6 @@ NSString * const pdfFolderName = @"PDFFolder";
     
     return newURL;
 }
-
 
 #pragma mark - Save OR Load library
 
@@ -96,20 +95,16 @@ NSString * const pdfFolderName = @"PDFFolder";
     /** Remove whitespace from book.title to avoid problems */
     NSString *fileName = [aBook.title stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSURL *folderURL = [DRGPersistanceManager documentsFolderURL];
-    
     // Save the cover image
-    NSURL *coverLocalURL = [DRGPersistanceManager saveImage:image
-                                                onFolderURL:folderURL
-                                                   withName:fileName];
+    NSURL *coverLocalURL = [DRGPersistanceManager saveImage:image onFolderURL:folderURL withName:fileName];
+    
     return coverLocalURL;
 }
 
 + (UIImage *)loadCoverImageOfBook:(DRGBook *)aBook {
     NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.coverImageURL];
-    NSData *imageData = [NSData dataWithContentsOfURL:url];
-    
-    NSLog(@"Cover Image %@ loaded from Documents/",[url lastPathComponent]);
-    return [UIImage imageWithData:imageData];
+    NSLog(@"Cover Image %@ LOADED from Documents/",[url lastPathComponent]);
+    return [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
 }
 
 + (NSURL *)saveImage:(UIImage *)image onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
@@ -121,17 +116,36 @@ NSString * const pdfFolderName = @"PDFFolder";
         //check if the directory of our image is already exist
         if ([fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
             //create the complete url
-            NSURL *fileToWrite = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"jpg"];
+            NSURL *fullPath = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"jpg"];
             NSData *imageData = UIImageJPEGRepresentation(image, 1.);
-            if ([imageData writeToURL:fileToWrite options:NSDataWritingAtomic error:&error]) {
-                NSLog(@"Cover Image %@ saved on Documents/",[fileToWrite lastPathComponent]);
-                return fileToWrite;
+            if ([imageData writeToURL:fullPath options:NSDataWritingAtomic error:&error]) {
+                NSLog(@"Cover Image %@ SAVED on Documents/",[fullPath lastPathComponent]);
+                return fullPath;
             }
         }
     }
     
-    NSLog(@"Save Cover image failed with error: %@", error);
+    NSLog(@"Save Cover image failed with error: %@", error.userInfo);
     return nil;
+}
+
+#pragma mark - Manage PDF files
+
++ (NSURL *)savePDFFile:(NSData *)pdfData ofBook:(DRGBook *)aBook {
+    
+    /** Remove whitespace from book.title to avoid problems */
+    NSString *fileName = [aBook.title stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSURL *folderURL = [DRGPersistanceManager documentsFolderURL];
+    // Save the cover image
+    NSURL *pdfLocalURL = [DRGPersistanceManager savePDF:pdfData onFolderURL:folderURL withName:fileName];
+    
+    return pdfLocalURL;
+}
+
++ (NSData *)loadPDFFileOfBook:(DRGBook *)aBook {
+    NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.PDFFileURL];
+    NSLog(@"PDF file %@ LOADED from Documents/",[url lastPathComponent]);
+    return [NSData dataWithContentsOfURL:url];
 }
 
 + (NSURL *)savePDF:(NSData *)pdfData onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
@@ -143,16 +157,19 @@ NSString * const pdfFolderName = @"PDFFolder";
         //check if the directory of our image is already exist
         if ([fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
             //create the complete url
-            NSURL * fileToWrite = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"pdf"];
-            if ([pdfData writeToURL:fileToWrite options:NSDataWritingAtomic error:&error]) {
-//                NSLog(@"PDF saved at URL: %@",fileToWrite);
-                return fileToWrite;
+            NSURL *fullPath = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"pdf"];
+            if ([pdfData writeToURL:fullPath options:NSDataWritingAtomic error:&error]) {
+                NSLog(@"PDF file %@ SAVED on Documents/",[fullPath lastPathComponent]);
+                return fullPath;
             }
         }
     }
     
-    NSLog(@"Save PDF failed with error: %@", error);
+    NSLog(@"Save PDF failed with error: %@", error.userInfo);
     return nil;
 }
+
+#pragma mark - Helpers
+
 
 @end
