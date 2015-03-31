@@ -37,7 +37,6 @@
         // If not, download & save it into disk.
         NSData *imageData = [NSData dataWithContentsOfURL:aBook.coverImageURL];
         UIImage *cover = [UIImage imageWithData:imageData];
-        
         NSURL *coverLocalURL = [DRGPersistanceManager saveCoverImage:cover ofBook:aBook];
         if (coverLocalURL) { // local URL
             // Update book info

@@ -12,12 +12,7 @@
 #import "DRGLibrary.h"
 #import "DRGBook.h"
 
-NSString * const imageFolderName = @"ImageFolder";
-NSString * const pdfFolderName = @"PDFFolder";
-
 @interface DRGPersistanceManager ()
-
-@property (nonatomic, strong) NSFileManager *fileManager;
 
 @end
 
@@ -41,11 +36,7 @@ NSString * const pdfFolderName = @"PDFFolder";
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-
     NSURL *newURL = [documentsURL URLByAppendingPathComponent:[storedLocalURL lastPathComponent] isDirectory:NO];
-    
-//    NSLog(@"New local path: %@", [newURL absoluteString]);
-//    NSLog(@"Old local path: %@", [storedLocalURL absoluteString]);
     
     return newURL;
 }
@@ -66,7 +57,6 @@ NSString * const pdfFolderName = @"PDFFolder";
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:JSON
                                                        options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about readability
                                                          error:&error];
-    
     // Save it
     if (![jsonData writeToURL:[DRGPersistanceManager localLibraryURL] atomically:YES]) {  // Save library database and check result
         NSLog(@"There was an error saving the library data base into the Documents folder");
@@ -80,10 +70,9 @@ NSString * const pdfFolderName = @"PDFFolder";
 + (DRGLibrary *)loadLibraryFromDocumentsFolder {
     
     NSData *data = [NSData dataWithContentsOfURL:[DRGPersistanceManager localLibraryURL]];
+    NSLog(@"Library was loaded from Documents/");
     // Create the Library
     DRGLibrary *library = [DRGLibrary libraryWithJSONData:data];
-    
-    NSLog(@"Library was loaded from Documents/");
 
     return library;
 }
@@ -92,12 +81,12 @@ NSString * const pdfFolderName = @"PDFFolder";
 
 + (NSURL *)saveCoverImage:(UIImage *)image ofBook:(DRGBook *)aBook {
     
-    /** Remove whitespace from book.title to avoid problems */
-    NSString *fileName = [aBook.title stringByReplacingOccurrencesOfString:@" " withString:@""];
-    NSURL *folderURL = [DRGPersistanceManager documentsFolderURL];
     // Save the cover image
-    NSURL *coverLocalURL = [DRGPersistanceManager saveImage:image onFolderURL:folderURL withName:fileName];
-    
+    NSData *imageData = UIImageJPEGRepresentation(image, 1.);
+    NSURL *coverLocalURL = [DRGPersistanceManager saveData:imageData
+                                               onFolderURL:[DRGPersistanceManager documentsFolderURL]
+                                                  withName:aBook.title
+                                              andExtension:@"jpg"];
     return coverLocalURL;
 }
 
@@ -107,38 +96,15 @@ NSString * const pdfFolderName = @"PDFFolder";
     return [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
 }
 
-+ (NSURL *)saveImage:(UIImage *)image onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
-    
-    NSError *error;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    //check if the cache directory is writable
-    if ([fileManager isWritableFileAtPath:[folderURL path]]) {
-        //check if the directory of our image is already exist
-        if ([fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
-            //create the complete url
-            NSURL *fullPath = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"jpg"];
-            NSData *imageData = UIImageJPEGRepresentation(image, 1.);
-            if ([imageData writeToURL:fullPath options:NSDataWritingAtomic error:&error]) {
-                NSLog(@"Cover Image %@ SAVED on Documents/",[fullPath lastPathComponent]);
-                return fullPath;
-            }
-        }
-    }
-    
-    NSLog(@"Save Cover image failed with error: %@", error.userInfo);
-    return nil;
-}
-
 #pragma mark - Manage PDF files
 
 + (NSURL *)savePDFFile:(NSData *)pdfData ofBook:(DRGBook *)aBook {
     
-    /** Remove whitespace from book.title to avoid problems */
-    NSString *fileName = [aBook.title stringByReplacingOccurrencesOfString:@" " withString:@""];
-    NSURL *folderURL = [DRGPersistanceManager documentsFolderURL];
     // Save the cover image
-    NSURL *pdfLocalURL = [DRGPersistanceManager savePDF:pdfData onFolderURL:folderURL withName:fileName];
-    
+    NSURL *pdfLocalURL = [DRGPersistanceManager saveData:pdfData
+                                             onFolderURL:[DRGPersistanceManager documentsFolderURL]
+                                                withName:aBook.title
+                                            andExtension:@"pdf"];
     return pdfLocalURL;
 }
 
@@ -148,7 +114,9 @@ NSString * const pdfFolderName = @"PDFFolder";
     return [NSData dataWithContentsOfURL:url];
 }
 
-+ (NSURL *)savePDF:(NSData *)pdfData onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
+#pragma mark - Helpers
+
++ (NSURL *)saveData:(NSData *)data onFolderURL:(NSURL *)folderURL withName:(NSString *)aName andExtension:(NSString *)aExtension {
     
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -157,19 +125,16 @@ NSString * const pdfFolderName = @"PDFFolder";
         //check if the directory of our image is already exist
         if ([fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
             //create the complete url
-            NSURL *fullPath = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"pdf"];
-            if ([pdfData writeToURL:fullPath options:NSDataWritingAtomic error:&error]) {
-                NSLog(@"PDF file %@ SAVED on Documents/",[fullPath lastPathComponent]);
+            NSURL *fullPath = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:aExtension];
+            if ([data writeToURL:fullPath options:NSDataWritingAtomic error:&error]) {
+                NSLog(@"File named %@ SAVED on Documents/",[fullPath lastPathComponent]);
                 return fullPath;
             }
         }
     }
     
-    NSLog(@"Save PDF failed with error: %@", error.userInfo);
+    NSLog(@"Save file named %@ failed with error: %@",aName, error.userInfo);
     return nil;
 }
-
-#pragma mark - Helpers
-
 
 @end
