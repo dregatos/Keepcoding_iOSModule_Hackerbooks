@@ -36,7 +36,14 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     
     /** Create the controllers */
     DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibrary:library style:UITableViewStyleGrouped];
-    DRGBookVC *bookVC = [[DRGBookVC alloc] initWithBook:library.bookList[0]];
+    DRGBook *visibleBook;
+    if (library.favoriteBooksCount) {
+        visibleBook = [[library favoriteBookList] firstObject];
+    } else {
+        visibleBook = [library bookForTag:[[library tags] firstObject] atIndex:0];
+    }
+    
+    DRGBookVC *bookVC = [[DRGBookVC alloc] initWithBook:visibleBook];
 
     /** Create navigators */
     UINavigationController *leftController = [[UINavigationController alloc] initWithRootViewController:tableVC];
@@ -95,8 +102,6 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
         library = [DRGDownloadManager downloadLibraryFromServer];
         // Save library
         [DRGPersistanceManager saveLibraryOnDocumentFolder:library];
-        // Download&Save books' resources
-//        [DRGPersistanceManager saveResourcesOfLibrary:library];
         // Update 'WAS_LAUNCHED_BEFORE' flag value
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:WAS_LAUNCHED_BEFORE];
     }
