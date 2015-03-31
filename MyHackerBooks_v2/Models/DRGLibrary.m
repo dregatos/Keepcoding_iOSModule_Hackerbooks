@@ -7,9 +7,13 @@
 //
 
 #import "DRGLibrary.h"
-#import "DRGDownloadManager.h"
 #import "DRGLibraryParser.h"
-#import "DRGLibraryAnalyzer.h"
+#import "DRGLibrarySearcher.h"
+
+#import "NotificationKeys.h"
+
+#import "DRGPersistanceManager.h"
+
 #import "DRGBook.h"
 
 @interface DRGLibrary ()
@@ -41,22 +45,30 @@
 
 #pragma mark - Public methods
 
-- (DRGLibrary *)didUpdateBookContent:(DRGBook *)aBook {
+- (void)didUpdateBookContent:(DRGBook *)aBook {
     
-    if ([self.books containsObject:aBook]) {
+    if ([self.books containsObject:aBook]) {  //Only if belong to our Library
         
+        // Update content of library
         NSMutableArray *mList = [self.books mutableCopy];
         NSUInteger index = [mList indexOfObject:aBook];
         [mList replaceObjectAtIndex:index withObject:aBook];
         
         self.books = [mList copy];
+        
+        NSLog(@"Library was updated");
+        
+        // Save updated library
+        [DRGPersistanceManager saveLibraryOnDocumentsFolder:self];
+        
+        // Notify library was updated
+        NSDictionary *dict = @{LIBRARY_KEY:self};
+        [[NSNotificationCenter defaultCenter] postNotificationName:LIBRARY_DID_CHANGE_NOTIFICATION_NAME object:self userInfo:dict];
     }
-    
-    return self;
 }
 
 - (NSArray *)bookList {
-    return [DRGLibraryAnalyzer bookListAlphabeticallySortedByTitle:self.books];
+    return [DRGLibrarySearcher bookListAlphabeticallySortedByTitle:self.books];
 }
 
 - (NSUInteger)booksCount {
@@ -64,29 +76,29 @@
 }
 
 - (NSArray *)favoriteBookList {
-    return [DRGLibraryAnalyzer sortedFavoriteBookList:self.books];
+    return [DRGLibrarySearcher sortedFavoriteBookList:self.books];
 }
 
 - (NSUInteger)favoriteBooksCount {
-    NSArray *list = [DRGLibraryAnalyzer sortedFavoriteBookList:self.books];
+    NSArray *list = [DRGLibrarySearcher sortedFavoriteBookList:self.books];
     return [list count];
 }
 
 - (NSArray *)tags {
-    return [DRGLibraryAnalyzer sortedTagListForBooks:self.books];
+    return [DRGLibrarySearcher sortedTagListForBooks:self.books];
 }
 
 - (NSUInteger)bookCountForTag:(NSString *)tag {
-    NSArray *list = [DRGLibraryAnalyzer sortedBookList:self.books forTag:tag];
+    NSArray *list = [DRGLibrarySearcher sortedBookList:self.books forTag:tag];
     return [list count];
 }
 
 - (NSArray *)booksForTag:(NSString *)tag {
-    return [DRGLibraryAnalyzer sortedBookList:self.books forTag:tag];
+    return [DRGLibrarySearcher sortedBookList:self.books forTag:tag];
 }
 
 - (DRGBook *)bookForTag:(NSString *)tag atIndex:(NSUInteger)index {
-    NSArray *list = [DRGLibraryAnalyzer sortedBookList:self.books forTag:tag];
+    NSArray *list = [DRGLibrarySearcher sortedBookList:self.books forTag:tag];
     return [list objectAtIndex:index];
 }
 

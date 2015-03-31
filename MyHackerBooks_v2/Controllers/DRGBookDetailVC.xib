@@ -6,7 +6,7 @@
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DRGBookVC">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DRGBookDetailVC">
             <connections>
                 <outlet property="authorListLbl" destination="szR-5h-Jbf" id="lqN-89-r4J"/>
                 <outlet property="coverImageView" destination="A1b-sU-SLF" id="MRt-zt-Tj9"/>
@@ -27,7 +27,7 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="A1b-sU-SLF">
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="A1b-sU-SLF">
                     <rect key="frame" x="123" y="176" width="355" height="416"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="A1b-sU-SLF" secondAttribute="height" multiplier="355:446" id="hRz-qJ-FPv"/>

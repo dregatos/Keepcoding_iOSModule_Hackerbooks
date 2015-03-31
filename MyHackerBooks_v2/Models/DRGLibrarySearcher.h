@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
-@interface DRGLibraryAnalyzer : NSObject
+@interface DRGLibrarySearcher : NSObject
 
 /** Returns the given 'unorderedList' sorted alphabetically */
 + (NSArray *)bookListAlphabeticallySortedByTitle:(NSArray *)unorderedList;

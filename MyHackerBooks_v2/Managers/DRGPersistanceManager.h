@@ -6,17 +6,30 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+@import UIKit.UIImage;
 
 @class DRGLibrary;
+@class DRGBook;
 
 @interface DRGPersistanceManager : NSObject
 
+#pragma mark - Library
 
 /** Returns YES if saving process success */
-+ (BOOL)saveLibraryOnDocumentFolder:(DRGLibrary *)aLibrary;
++ (BOOL)saveLibraryOnDocumentsFolder:(DRGLibrary *)aLibrary;
 
 /** Fetchs the library stored on the Documents folder */
-+ (DRGLibrary *)loadLibraryFromDocumentFolder;
++ (DRGLibrary *)loadLibraryFromDocumentsFolder;
+
+#pragma mark - Cover images cache
+
+/** Returns local URL when the image was saved. If 'nil' then it was an error... */
++ (NSURL *)saveCoverImage:(UIImage *)image ofBook:(DRGBook *)aBook;
+
+/**  */
++ (UIImage *)loadCoverImageOfBook:(DRGBook *)aBook;
+
+#pragma mark - PDF files cache
 
 @end

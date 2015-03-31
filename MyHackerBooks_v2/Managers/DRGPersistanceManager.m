@@ -25,26 +25,35 @@ NSString * const pdfFolderName = @"PDFFolder";
 
 #pragma mark - System folders URLs
 
-- (NSFileManager *)fileManager {
-    if (!_fileManager) {
-        _fileManager = [NSFileManager defaultManager];
-    }
-    return _fileManager;
-}
-
-- (NSURL *)documentsFolderURL {
++ (NSURL *)documentsFolderURL {
     // Get path to the Documents folder
-    NSURL *documentsURL = [[self.fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *documentsURL = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory
+                                                                  inDomains:NSUserDomainMask] lastObject];
     return documentsURL;
 }
 
-- (NSURL *)localLibraryURL  {
-    return [[self documentsFolderURL] URLByAppendingPathComponent:@"library.txt"];
++ (NSURL *)localLibraryURL  {
+    return [[DRGPersistanceManager documentsFolderURL] URLByAppendingPathComponent:@"library.txt"];
 }
 
-#pragma mark - Save library
+/** Document Or cache Path Changes on every launch in iOS 8 */
++ (NSURL *)currentLocalURL:(NSURL *)storedLocalURL {
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    
+    NSURL *newURL = [documentsURL URLByAppendingPathComponent:[storedLocalURL lastPathComponent] isDirectory:NO];
+    
+//    NSLog(@"New local path: %@", [newURL absoluteString]);
+//    NSLog(@"Old local path: %@", [storedLocalURL absoluteString]);
+    
+    return newURL;
+}
 
-+ (BOOL)saveLibraryOnDocumentFolder:(DRGLibrary *)aLibrary {
+
+#pragma mark - Save OR Load library
+
++ (BOOL)saveLibraryOnDocumentsFolder:(DRGLibrary *)aLibrary {
     
     // DRGLibrary -> JSON
     NSError *error;
@@ -60,71 +69,62 @@ NSString * const pdfFolderName = @"PDFFolder";
                                                          error:&error];
     
     // Save it
-    if (![jsonData writeToURL:[[self alloc] localLibraryURL] atomically:YES]) {  // Save library database and check result
+    if (![jsonData writeToURL:[DRGPersistanceManager localLibraryURL] atomically:YES]) {  // Save library database and check result
         NSLog(@"There was an error saving the library data base into the Documents folder");
         return NO;
     }
     
+    NSLog(@"Library was saved on Documents/");
     return YES;  // Succesfully saved
 }
 
-#pragma mark - Load local library
-
-+ (DRGLibrary *)loadLibraryFromDocumentFolder {
++ (DRGLibrary *)loadLibraryFromDocumentsFolder {
     
-    NSData *data = [NSData dataWithContentsOfURL:[[self alloc] localLibraryURL]];
+    NSData *data = [NSData dataWithContentsOfURL:[DRGPersistanceManager localLibraryURL]];
     // Create the Library
     DRGLibrary *library = [DRGLibrary libraryWithJSONData:data];
     
+    NSLog(@"Library was loaded from Documents/");
+
     return library;
 }
 
-#pragma mark - Save cover images and pdf's
+#pragma mark - Manage Cover Images
 
-+ (void)saveResourcesOfLibrary:(DRGLibrary *)aLibrary {
++ (NSURL *)saveCoverImage:(UIImage *)image ofBook:(DRGBook *)aBook {
     
-    for (DRGBook *book in aLibrary.bookList) {
-        
-        /** Remove whitespace from book.title to avoid problems */
-        NSString *fileName = [book.title stringByReplacingOccurrencesOfString:@" " withString:@""];
-        NSURL *folderURL = [[self  alloc] documentsFolderURL];
-        
-        // Save the cover image
-        NSData *imageData = [NSData dataWithContentsOfURL:book.coverImageURL];
-        UIImage *cover = [UIImage imageWithData:imageData];
-        NSURL *coverLocalURL = [[self alloc] saveImage:cover
-                                           onFolderURL:folderURL
-                                              withName:fileName];
-        if (coverLocalURL) { // Save local URL
-            book.coverImageURL = coverLocalURL;
-        }
-        
-        // Save PDF
-        NSData *pdfData = [NSData dataWithContentsOfURL:book.PDFFileURL];
-        NSURL *pdfLocalURL = [[self alloc] savePDF:pdfData
-                                       onFolderURL:folderURL
-                                          withName:fileName];
-        if (pdfLocalURL) {  // Save local URL
-            book.PDFFileURL = pdfLocalURL;
-        }
-    }
+    /** Remove whitespace from book.title to avoid problems */
+    NSString *fileName = [aBook.title stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSURL *folderURL = [DRGPersistanceManager documentsFolderURL];
     
-    // Save library (the NSData) again, containing local URLs
-    [DRGPersistanceManager saveLibraryOnDocumentFolder:aLibrary];
+    // Save the cover image
+    NSURL *coverLocalURL = [DRGPersistanceManager saveImage:image
+                                                onFolderURL:folderURL
+                                                   withName:fileName];
+    return coverLocalURL;
 }
 
-- (NSURL *)saveImage:(UIImage *)image onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
++ (UIImage *)loadCoverImageOfBook:(DRGBook *)aBook {
+    NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.coverImageURL];
+    NSData *imageData = [NSData dataWithContentsOfURL:url];
+    
+    NSLog(@"Cover Image %@ loaded from Documents/",[url lastPathComponent]);
+    return [UIImage imageWithData:imageData];
+}
+
++ (NSURL *)saveImage:(UIImage *)image onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
     
     NSError *error;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     //check if the cache directory is writable
-    if ([self.fileManager isWritableFileAtPath:[folderURL path]]) {
+    if ([fileManager isWritableFileAtPath:[folderURL path]]) {
         //check if the directory of our image is already exist
-        if ([self.fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
+        if ([fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
             //create the complete url
             NSURL *fileToWrite = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"jpg"];
             NSData *imageData = UIImageJPEGRepresentation(image, 1.);
             if ([imageData writeToURL:fileToWrite options:NSDataWritingAtomic error:&error]) {
-//                NSLog(@"Image saved at URL: %@",fileToWrite);
+                NSLog(@"Cover Image %@ saved on Documents/",[fileToWrite lastPathComponent]);
                 return fileToWrite;
             }
         }
@@ -134,13 +134,14 @@ NSString * const pdfFolderName = @"PDFFolder";
     return nil;
 }
 
-- (NSURL *)savePDF:(NSData *)pdfData onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
++ (NSURL *)savePDF:(NSData *)pdfData onFolderURL:(NSURL *)folderURL withName:(NSString *)aName {
     
     NSError *error;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     //check if the cache directory is writable
-    if ([self.fileManager isWritableFileAtPath:[folderURL path]]) {
+    if ([fileManager isWritableFileAtPath:[folderURL path]]) {
         //check if the directory of our image is already exist
-        if ([self.fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
+        if ([fileManager createDirectoryAtURL:folderURL withIntermediateDirectories:YES attributes:nil error:&error]) {
             //create the complete url
             NSURL * fileToWrite = [[folderURL URLByAppendingPathComponent:aName isDirectory:NO] URLByAppendingPathExtension:@"pdf"];
             if ([pdfData writeToURL:fileToWrite options:NSDataWritingAtomic error:&error]) {

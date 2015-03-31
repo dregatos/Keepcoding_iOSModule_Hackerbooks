@@ -22,7 +22,7 @@
 @property (nonatomic, copy) NSURL *coverImageURL;       // Copy
 @property (nonatomic, copy) NSURL *PDFFileURL;          // Copy
 
-/** Determined by the user at runtime */
+/** Determined by the user at runtime. Locally stored */
 @property (nonatomic, readonly) BOOL isFavorite;        // Readonly. User toggleFavoriteStatus: to change it
 
 #pragma mark - Factory methods
@@ -50,9 +50,10 @@
 
 - (NSDictionary *)proxyForJSON;
 
-#pragma mark - Others
+#pragma mark - Modify book info
 
 - (void)toggleFavoriteStatus;
 
+- (void)updateCoverImageURL:(NSURL *)newURL;
 
 @end

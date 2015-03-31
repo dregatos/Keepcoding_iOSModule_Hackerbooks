@@ -6,28 +6,67 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import "DRGBookVC.h"
+#import "DRGBookDetailVC.h"
+#import "DRGDownloadManager.h"
 #import "DRGBook.h"
+#import "DRGLibrary.h"
 #import "DRGSimplePDFVC.h"
 #import "NotificationKeys.h"
 
-@interface DRGBookVC ()
+@interface DRGBookDetailVC ()
 
 @property (nonatomic, readwrite) DRGBook *book;
+@property (nonatomic, readwrite) DRGLibrary *library;
 
 @end
 
-@implementation DRGBookVC
+@implementation DRGBookDetailVC
 
 #pragma mark - Init
 
-- (id)initWithBook:(DRGBook *)aBook {
-    
+- (id)initWithBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary {
+
     if (self = [super init]) {
         _book = aBook;
+        _library = aLibrary;
     }
     
     return self;
+}
+
+#pragma mark - Notification
+
+- (void)dealloc {
+    [self unregisterForNotifications];
+}
+
+- (void)registerForNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(notifyLibraryDidChange:)
+                                                 name:LIBRARY_DID_CHANGE_NOTIFICATION_NAME
+                                               object:self.library];
+}
+
+- (void)unregisterForNotifications {
+    // Clear out _all_ observations that this object was making
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+// LIBRARY_DID_CHANGE_NOTIFICATION_NAME
+- (void)notifyLibraryDidChange:(NSNotification *)notification {
+    
+    // Get updated book
+    DRGLibrary *updatedLibrary = notification.userInfo[LIBRARY_KEY];
+    // Update model
+    self.library = updatedLibrary;
+    for (DRGBook *book in self.library.bookList) {
+        if ([book isEqual:self.book]) { // (= same title, but updated information)
+            self.book = book;
+            break;
+        }
+    }
+    // Update content view
+    [self updateViewContent];
 }
 
 #pragma mark - Lifecycle
@@ -42,8 +81,18 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self syncViewWithModel];
+    [self updateViewContent];
+    
+    // Notifications **********************
+    [self registerForNotifications];
 }
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self unregisterForNotifications];   //optionally we can unregister a notification when the view disappears
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -68,34 +117,25 @@
 
 - (IBAction)favoriteBtnPressed:(UIButton *)sender {
     
+    // update book
     [self.book toggleFavoriteStatus];
-    [self syncViewWithModel];
-    
-    // notify change to our model
-    NSDictionary *dict = @{BOOK_KEY:self.book};
-    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_DID_CHANGE_NOTIFICATION_NAME object:self userInfo:dict];
+    // update library
+    [self.library didUpdateBookContent:self.book];
+    // sync view - model
+    /** Updated through LIBRARY_DID_CHANGE_NOTIFICATION_NAME */
 }
 
 #pragma mark - Utils
 
-- (void)syncViewWithModel {
+- (void)updateViewContent {
     
     self.title = @"Book Information";
     
     self.titleLbl.text = self.book.title;
     self.authorListLbl.text = [self.book.authorList componentsJoinedByString:@","];
     self.tagListLbl.text = [self.book.tagList componentsJoinedByString:@","];
-    
-    NSError *error;
-    NSData *coverData = [NSData dataWithContentsOfURL:self.book.coverImageURL options:0 error:&error];
-    UIImage *coverIm = [UIImage imageWithData:coverData];
-    
-    if (!coverIm) {
-        NSLog(@"If cover image is not available, show a placeholder cover");
-    }
-    self.coverImageView.image = coverIm;
-    
     self.favoriteBtn.selected = self.book.isFavorite;
+    self.coverImageView.image = [DRGDownloadManager downloadCoverImageForBook:self.book ofLibrary:self.library];
 }
 
 #pragma mark - UISplitViewControllerDelegate
@@ -115,7 +155,7 @@
 
 - (void)libraryTableVC:(DRGLibraryTableVC *)libraryTableVC didSelectCharacter:(DRGBook *)book {
     self.book = book;
-    [self syncViewWithModel];
+    [self updateViewContent];
 }
 
 

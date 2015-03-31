@@ -12,7 +12,7 @@
 #import "DRGDownloadManager.h"
 #import "DRGPersistanceManager.h"
 
-#import "DRGBookVC.h"
+#import "DRGBookDetailVC.h"
 #import "DRGLibraryTableVC.h"
 
 @interface AppDelegate ()
@@ -43,7 +43,7 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
         visibleBook = [library bookForTag:[[library tags] firstObject] atIndex:0];
     }
     
-    DRGBookVC *bookVC = [[DRGBookVC alloc] initWithBook:visibleBook];
+    DRGBookDetailVC *bookVC = [[DRGBookDetailVC alloc] initWithBook:visibleBook ofLibrary:library];
 
     /** Create navigators */
     UINavigationController *leftController = [[UINavigationController alloc] initWithRootViewController:tableVC];
@@ -94,14 +94,14 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     DRGLibrary *library;
     if ([[NSUserDefaults standardUserDefaults] boolForKey:WAS_LAUNCHED_BEFORE]) {
         NSLog(@"Loading library...");
-        library = [DRGPersistanceManager loadLibraryFromDocumentFolder];
+        library = [DRGPersistanceManager loadLibraryFromDocumentsFolder];
     }
     
     if (!library) { // If the library wasn't loaded OR we weren't able to load it, then download it.
         NSLog(@"Downloading library...");
         library = [DRGDownloadManager downloadLibraryFromServer];
         // Save library
-        [DRGPersistanceManager saveLibraryOnDocumentFolder:library];
+        [DRGPersistanceManager saveLibraryOnDocumentsFolder:library];
         // Update 'WAS_LAUNCHED_BEFORE' flag value
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:WAS_LAUNCHED_BEFORE];
     }

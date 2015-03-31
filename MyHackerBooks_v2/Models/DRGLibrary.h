@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 @class DRGBook;
 
@@ -19,10 +19,10 @@
 - (instancetype)initWithJSONData:(NSData *)jsonData;       
 
 /**
-     Updates given book info, if it belongs to our library and
-     returns the updated library.
+    Updates given book info (if it belongs to our library)
+    and returns the updated library.
  */
-- (DRGLibrary *)didUpdateBookContent:(DRGBook *)aBook;
+- (void)didUpdateBookContent:(DRGBook *)aBook;
 
 
 #pragma mark - UITableViewController helpers

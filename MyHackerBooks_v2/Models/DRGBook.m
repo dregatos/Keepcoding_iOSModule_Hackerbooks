@@ -78,6 +78,12 @@
             };
 }
 
+#pragma mark - Properties
+
+- (void)updateCoverImageURL:(NSURL *)newURL {
+    self.coverImageURL = newURL;
+}
+
 #pragma mark - Utils
 
 - (BOOL)isEqual:(id)object {

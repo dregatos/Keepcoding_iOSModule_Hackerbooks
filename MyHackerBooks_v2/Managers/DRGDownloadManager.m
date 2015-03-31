@@ -7,9 +7,13 @@
 //
 
 #import "DRGDownloadManager.h"
+#import "DRGPersistanceManager.h"
 #import "DRGLibrary.h"
+#import "DRGBook.h"
 
 @implementation DRGDownloadManager
+
+#pragma mark - Library
 
 + (DRGLibrary *)downloadLibraryFromServer {
     // Download library
@@ -20,6 +24,33 @@
     
     return library;
 }
+
+#pragma mark - Cover Images
+
++ (UIImage *)downloadCoverImageForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary{
+
+    if ([aBook.coverImageURL isFileURL]) {
+        // If cover image was stored on disk, then return it.
+        return [DRGPersistanceManager loadCoverImageOfBook:aBook];
+        
+    } else {
+        // If not, download & save it into disk.
+        NSData *imageData = [NSData dataWithContentsOfURL:aBook.coverImageURL];
+        UIImage *cover = [UIImage imageWithData:imageData];
+        
+        NSURL *coverLocalURL = [DRGPersistanceManager saveCoverImage:cover ofBook:aBook];
+        if (coverLocalURL) { // local URL
+            // Update book info
+            [aBook updateCoverImageURL:coverLocalURL];
+            // Update my library
+            [aLibrary didUpdateBookContent:aBook];
+        }
+        
+        return cover;
+    }
+}
+
+#pragma mark - Helpers
 
 + (NSData *)downloadJSONFromURL:(NSURL *)jsonURL {
     
@@ -35,5 +66,7 @@
     
     return data;
 }
+
+
 
 @end

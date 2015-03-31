@@ -7,10 +7,11 @@
 //
 
 #import "DRGLibraryTableVC.h"
+
+#import "NotificationKeys.h"
+
 #import "DRGLibrary.h"
 #import "DRGBook.h"
-#import "DRGPersistanceManager.h"
-#import "NotificationKeys.h"
 
 #define FAVORITE_SECTION_INDEX 0
 
@@ -39,7 +40,10 @@
 }
 
 - (void)registerForNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyBookDidChange:) name:BOOK_DID_CHANGE_NOTIFICATION_NAME object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(notifyLibraryDidChange:)
+                                                 name:LIBRARY_DID_CHANGE_NOTIFICATION_NAME
+                                               object:self.library];
 }
 
 - (void)unregisterForNotifications {
@@ -47,16 +51,15 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)notifyBookDidChange:(NSNotification *)notification {
+// LIBRARY_DID_CHANGE_NOTIFICATION_NAME
+- (void)notifyLibraryDidChange:(NSNotification *)notification {
     
     // Get updated book
-    DRGBook *updatedBook = notification.userInfo[BOOK_KEY];
-    
-    self.library = [self.library didUpdateBookContent:updatedBook];
+    DRGLibrary *updatedLibrary = notification.userInfo[LIBRARY_KEY];
+    // Update model
+    self.library = updatedLibrary;
+    // Update content view
     [self.tableView reloadData];
-    
-    // Save library
-    [DRGPersistanceManager saveLibraryOnDocumentFolder:self.library];
 }
 
 #pragma mark - Lifecycle
@@ -66,14 +69,16 @@
     
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
     // Notifications **********************
     [self registerForNotifications];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
     [self unregisterForNotifications];   //optionally we can unregister a notification when the view disappears
 }
 

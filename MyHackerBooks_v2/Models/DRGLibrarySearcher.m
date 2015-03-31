@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import "DRGLibraryAnalyzer.h"
+#import "DRGLibrarySearcher.h"
 #import "DRGBook.h"
 
-@implementation DRGLibraryAnalyzer
+@implementation DRGLibrarySearcher
 
 + (NSArray *)bookListAlphabeticallySortedByTitle:(NSArray *)unorderedList {
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title"
@@ -46,7 +46,7 @@
         }
     }
     
-    NSArray *orderedList = [DRGLibraryAnalyzer bookListAlphabeticallySortedByTitle:bookList];
+    NSArray *orderedList = [DRGLibrarySearcher bookListAlphabeticallySortedByTitle:bookList];
     return orderedList;
 }
 
@@ -59,7 +59,7 @@
         }
     }
     
-    NSArray *orderedList = [DRGLibraryAnalyzer bookListAlphabeticallySortedByTitle:bookList];
+    NSArray *orderedList = [DRGLibrarySearcher bookListAlphabeticallySortedByTitle:bookList];
     return orderedList;
 }
 

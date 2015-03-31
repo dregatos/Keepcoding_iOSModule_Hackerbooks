@@ -6,5 +6,5 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#define BOOK_DID_CHANGE_NOTIFICATION_NAME   @"BOOK_DID_CHANGE_NOTIFICATION_NAME"
-#define BOOK_KEY                            @"BOOK_KEY"
+#define LIBRARY_DID_CHANGE_NOTIFICATION_NAME   @"LIBRARY_DID_CHANGE_NOTIFICATION_NAME"
+#define LIBRARY_KEY                            @"LIBRARY_KEY"
