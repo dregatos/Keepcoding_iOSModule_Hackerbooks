@@ -6,12 +6,12 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import "DRGLibraryAnalyzer.h"
+#import "DRGLibrarySearcher.h"
 #import "DRGBook.h"
 
-@implementation DRGLibraryAnalyzer
+@implementation DRGLibrarySearcher
 
-- (NSArray *)bookListAlphabeticallyOrderedByTitle:(NSArray *)unorderedList {
++ (NSArray *)bookListAlphabeticallySortedByTitle:(NSArray *)unorderedList {
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title"
                                                                    ascending:YES
                                                                     selector:@selector(caseInsensitiveCompare:)];
@@ -19,8 +19,7 @@
     return [unorderedList sortedArrayUsingDescriptors:sortDescriptors];
 }
 
-
-- (NSArray *)orderedTagListForBooks:(NSArray *)books {
++ (NSArray *)sortedTagListForBooks:(NSArray *)books {
     
     NSMutableArray *tagList = [[NSMutableArray alloc] init];
     for (DRGBook *book in books) {
@@ -36,7 +35,7 @@
     return orderedList;
 }
 
-- (NSArray *)orderedBookList:(NSArray *)books forTag:(NSString *)tag {
++ (NSArray *)sortedBookList:(NSArray *)books forTag:(NSString *)tag {
 
     NSMutableArray *bookList = [[NSMutableArray alloc] init];
     for (DRGBook *book in books) {
@@ -47,8 +46,22 @@
         }
     }
     
-    NSArray *orderedList = [self bookListAlphabeticallyOrderedByTitle:bookList];
+    NSArray *orderedList = [DRGLibrarySearcher bookListAlphabeticallySortedByTitle:bookList];
     return orderedList;
 }
+
++ (NSArray *)sortedFavoriteBookList:(NSArray *)books {
+    
+    NSMutableArray *bookList = [[NSMutableArray alloc] init];
+    for (DRGBook *book in books) {
+        if (book.isFavorite) {
+            [bookList addObject:book];
+        }
+    }
+    
+    NSArray *orderedList = [DRGLibrarySearcher bookListAlphabeticallySortedByTitle:bookList];
+    return orderedList;
+}
+
 
 @end

@@ -6,7 +6,8 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+@import UIKit.UIImage;
 
 @interface DRGBook : NSObject
 
@@ -21,8 +22,8 @@
 @property (nonatomic, copy) NSURL *coverImageURL;       // Copy
 @property (nonatomic, copy) NSURL *PDFFileURL;          // Copy
 
-/** Determined by the user at runtime */
-@property (nonatomic, getter = isFavorite) BOOL favorite;
+/** Determined by the user at runtime. Locally stored */
+@property (nonatomic, readonly) BOOL isFavorite;        // Readonly. User toggleFavoriteStatus: to change it
 
 #pragma mark - Factory methods
 
@@ -30,7 +31,8 @@
                       authors:(NSArray *)authorList
                          tags:(NSArray *)tagList
                 coverImageURL:(NSURL *)coverURL
-                    andPDFURL:(NSURL *)PDFURL;
+                    andPDFURL:(NSURL *)PDFURL
+                andIsFavorite:(BOOL)isFavorite;
 
 #pragma mark - Initializers
 
@@ -38,7 +40,8 @@
             authors:(NSArray *)authorList
                tags:(NSArray *)tagList
       coverImageURL:(NSURL *)coverURL
-          andPDFURL:(NSURL *)PDFURL;
+             PDFURL:(NSURL *)PDFURL
+      andIsFavorite:(BOOL)isFavorite;
 
 
 #pragma mark - JSON
@@ -46,5 +49,13 @@
 - (id)initWithDictionary:(NSDictionary *)aDic;
 
 - (NSDictionary *)proxyForJSON;
+
+#pragma mark - Modify book info
+
+- (void)toggleFavoriteStatus;
+
+- (void)updateCoverImageURL:(NSURL *)newURL;
+
+- (void)updatePDFFileURL:(NSURL *)newURL;
 
 @end

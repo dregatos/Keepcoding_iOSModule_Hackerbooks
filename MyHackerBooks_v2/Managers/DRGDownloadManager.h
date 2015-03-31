@@ -6,15 +6,41 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+@import UIKit.UIImage;
 
+@class DRGBook;
 @class  DRGLibrary;
 
 @interface DRGDownloadManager : NSObject
 
-/** 
-    Download JSON, Serialize it and Create the Library
- */
+/** Download JSON, Serialize it and Create the Library */
 + (DRGLibrary *)downloadLibraryFromServer;
+
+/**
+    If requested cover image:
+ 
+    1. was previously download & stored, then it
+    returns the local copy.
+ 
+    2. is not stored on disk, then download, store it,
+    and UPDATE the library.
+ 
+    Filename of stored image is = book's title without whitespaces
+ */
++ (UIImage *)downloadCoverImageForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary;
+
+/**
+    If requested PDF file:
+
+    1. was previously download & stored, then it
+    returns the local copy.
+
+    2. is not stored on disk, then download, store it,
+    and UPDATE the library.
+
+    Filename of stored PDF file is = book's title without whitespaces
+ */
++ (NSData *)downloadPDFForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary;
 
 @end

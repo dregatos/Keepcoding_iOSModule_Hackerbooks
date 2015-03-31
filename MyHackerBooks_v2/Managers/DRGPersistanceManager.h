@@ -6,24 +6,36 @@
 //  Copyright (c) 2015 DRG. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+@import UIKit.UIImage;
 
 @class DRGLibrary;
+@class DRGBook;
 
 @interface DRGPersistanceManager : NSObject
 
+#pragma mark - Library
 
 /** Returns YES if saving process success */
-+ (BOOL)saveLibraryOnDocumentFolder:(DRGLibrary *)aLibrary;
++ (BOOL)saveLibraryOnDocumentsFolder:(DRGLibrary *)aLibrary;
 
-/** Returns the library stored on the Documents folder */
-+ (DRGLibrary *)loadLibraryFromDocumentFolder;
+/** Fetchs the library stored on the Documents folder */
++ (DRGLibrary *)loadLibraryFromDocumentsFolder;
 
-/** 
-    This method download and save each book's cover and pdf file on Documents.
-    It takes a while, freezing the app because (for now) we are doing this
-    process on the main thread.
- */
-+ (void)saveResourcesOfLibrary:(DRGLibrary *)aLibrary;
+#pragma mark - Cover images cache
+
+/** Returns local URL when the image was saved. If 'nil' then it was an error... */
++ (NSURL *)saveCoverImage:(UIImage *)image ofBook:(DRGBook *)aBook;
+
+/**  */
++ (UIImage *)loadCoverImageOfBook:(DRGBook *)aBook;
+
+#pragma mark - PDF files cache
+
+/** Returns local URL when the image was saved. If 'nil' then it was an error... */
++ (NSURL *)savePDFFile:(NSData *)pdfData ofBook:(DRGBook *)aBook;
+
+/**  */
++ (NSData *)loadPDFFileOfBook:(DRGBook *)aBook;
 
 @end
