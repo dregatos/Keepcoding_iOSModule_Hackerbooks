@@ -27,37 +27,24 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.backgroundColor = [UIColor whiteColor];
+
+    // Appearance
+//    [self customiseAppeareance];
     
     // Get our Model ***
     DRGLibrary *library = [self getLibrary];
     NSLog(@"Library description\n%@", [library description]);
     
-    
-    /** Create the controllers */
-    DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibrary:library style:UITableViewStyleGrouped];
-    DRGBook *visibleBook;
-    if (library.favoriteBooksCount) {
-        visibleBook = [[library favoriteBookList] firstObject];
+    /** Phone or tablet ? */
+    UIViewController *rootVC = nil;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        rootVC = [self rootViewControllerForPadWithModel:library];
     } else {
-        visibleBook = [library bookForTag:[[library tags] firstObject] atIndex:0];
+        rootVC = [self rootViewControllerForPhoneWithModel:library];
     }
     
-    DRGBookDetailVC *bookVC = [[DRGBookDetailVC alloc] initWithBook:visibleBook ofLibrary:library];
-
-    /** Create navigators */
-    UINavigationController *leftController = [[UINavigationController alloc] initWithRootViewController:tableVC];
-    UINavigationController *rightController = [[UINavigationController alloc] initWithRootViewController:bookVC];
-
-    /** Create a combinator of VCs */
-    UISplitViewController *splitVC = [[UISplitViewController alloc] init];
-    splitVC.viewControllers = @[leftController,rightController];
-    
-    /** Assign delegates */
-    splitVC.delegate = bookVC;
-    tableVC.delegate = bookVC;
-
-    self.window.rootViewController = splitVC;
+    // Assign the root
+    self.window.rootViewController = rootVC;
     [self.window makeKeyAndVisible];
     
     return YES;
@@ -85,6 +72,23 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark - Appearance
+
+- (void)customiseAppeareance {
+    
+    // Window
+    self.window.backgroundColor = [UIColor clearColor];
+    
+    // UINavigationBar ***
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:0.5 green:0 blue:0.13 alpha:1.0]];
+    [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                           [UIColor whiteColor], NSForegroundColorAttributeName,
+                                                           [UIFont fontWithName:@"AvenirNext-Bold" size:20.0], NSFontAttributeName,
+                                                           nil]];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+}
+
+
 #pragma mark - Helpers
 
 - (DRGLibrary *)getLibrary {
@@ -108,6 +112,48 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     
     return library;
 }
+
+- (UIViewController *)rootViewControllerForPhoneWithModel:(DRGLibrary *)library {
+    
+    // Create the controllers
+    DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibrary:library style:UITableViewStyleGrouped];
+    
+    UINavigationController *libraryNav = [[UINavigationController alloc] initWithRootViewController:tableVC];
+    
+    //Delegates
+    tableVC.delegate = tableVC;
+    
+    return libraryNav;
+}
+
+- (UIViewController *)rootViewControllerForPadWithModel:(DRGLibrary *)library {
+    
+    // Create the controllers
+    DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibrary:library style:UITableViewStyleGrouped];
+    DRGBook *visibleBook;
+    if (library.favoriteBooksCount) {
+        visibleBook = [[library favoriteBookList] firstObject];
+    } else {
+        visibleBook = [library bookForTag:[[library tags] firstObject] atIndex:0];
+    }
+    
+    DRGBookDetailVC *bookVC = [[DRGBookDetailVC alloc] initWithBook:visibleBook ofLibrary:library];
+    
+    // Create navigators
+    UINavigationController *leftController = [[UINavigationController alloc] initWithRootViewController:tableVC];
+    UINavigationController *rightController = [[UINavigationController alloc] initWithRootViewController:bookVC];
+
+    // Create the splitView
+    UISplitViewController *splitVC = [[UISplitViewController alloc] init];
+    splitVC.viewControllers = @[leftController,rightController];
+    
+    // Assigning Delegates
+    splitVC.delegate = bookVC;
+    tableVC.delegate = bookVC;
+    
+    return splitVC;
+}
+
 
 
 @end

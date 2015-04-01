@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *tagListLbl;
 @property (weak, nonatomic) IBOutlet UIImageView *coverImageView;
 @property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
+@property (weak, nonatomic) IBOutlet UIButton *readBtn;
 
 - (id)initWithBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary;
 

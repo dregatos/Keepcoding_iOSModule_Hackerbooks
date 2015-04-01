@@ -21,14 +21,14 @@
                                                       error:&error];
     
     if (JSONObject == nil || error) {
-        NSLog(@"JSON Parse failed with error: %@", error.localizedDescription);
+        NSLog(@"JSON Parse failed with error: %@", error.userInfo);
         return nil;
     }
     
     NSArray *bookList;
-    if ([JSONObject isKindOfClass:[NSArray class]]) {
+    if ([JSONObject isKindOfClass:[NSArray class]]) {  // Array of dictionaries
         bookList = [self parseJSONArray:(NSArray *)JSONObject];
-    } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {
+    } else if ([JSONObject isKindOfClass:[NSDictionary class]]) {   // A dictionary
         bookList = @[[self parseJSONDictionary:(NSDictionary *)JSONObject]];
     }
     

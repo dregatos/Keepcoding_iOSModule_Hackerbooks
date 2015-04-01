@@ -12,6 +12,13 @@
 @class DRGBook;
 @class  DRGLibrary;
 
+
+/** DESCRIPTION **
+ 
+    At the moment downloads are performed in the foreground.
+    Later we will add blocks and GCD to avoid blocking the app during downloads.
+ */
+
 @interface DRGDownloadManager : NSObject
 
 /** Download JSON, Serialize it and Create the Library */

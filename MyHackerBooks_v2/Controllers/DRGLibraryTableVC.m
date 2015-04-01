@@ -7,6 +7,7 @@
 //
 
 #import "DRGLibraryTableVC.h"
+#import "DRGBookDetailVC.h"
 
 #import "NotificationKeys.h"
 
@@ -151,7 +152,7 @@ NSString * const CustomCell = @"CustomCell";
         [self.delegate libraryTableVC:self didSelectCharacter:book];
     }
     
-    // Notify BOOK was selected
+    // Notify BOOK was selected - ONLY FOR iPad VERSION
     NSDictionary *dict = @{BOOK_KEY:book};
     [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_WAS_SELECTED_NOTIFICATION_NAME object:self userInfo:dict];
 }
@@ -182,6 +183,13 @@ NSString * const CustomCell = @"CustomCell";
 
 - (NSString *)tagAtIndex:(NSUInteger)index {
     return [[self.library tags] objectAtIndex:index];
+}
+
+#pragma mark - DRGLibraryTableVCDelegate
+
+- (void)libraryTableVC:(DRGLibraryTableVC *)libraryTableVC didSelectCharacter:(DRGBook *)book {
+    DRGBookDetailVC *bookVC = [[DRGBookDetailVC alloc] initWithBook:book ofLibrary:self.library];
+    [self.navigationController pushViewController:bookVC animated:YES];
 }
 
 @end

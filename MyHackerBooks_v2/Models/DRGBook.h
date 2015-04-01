@@ -58,4 +58,6 @@
 
 - (void)updatePDFFileURL:(NSURL *)newURL;
 
+- (BOOL)isPDFLocallyStored;
+
 @end

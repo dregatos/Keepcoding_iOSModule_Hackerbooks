@@ -126,8 +126,11 @@
     self.titleLbl.text = self.book.title;
     self.authorListLbl.text = [self.book.authorList componentsJoinedByString:@","];
     self.tagListLbl.text = [self.book.tagList componentsJoinedByString:@","];
-    self.favoriteBtn.selected = self.book.isFavorite;
     self.coverImageView.image = [DRGDownloadManager downloadCoverImageForBook:self.book ofLibrary:self.library];
+    self.favoriteBtn.selected = self.book.isFavorite;
+    [self.readBtn setTitle:@"Read Book" forState:UIControlStateSelected];
+    [self.readBtn setTitle:@"Download Book" forState:UIControlStateNormal];
+    self.readBtn.selected = [self.book isPDFLocallyStored];
 }
 
 #pragma mark - UISplitViewControllerDelegate

@@ -116,5 +116,8 @@
     self.isFavorite = !self.isFavorite;
 }
 
+- (BOOL)isPDFLocallyStored {
+    return [self.PDFFileURL isFileURL];
+}
 
 @end
