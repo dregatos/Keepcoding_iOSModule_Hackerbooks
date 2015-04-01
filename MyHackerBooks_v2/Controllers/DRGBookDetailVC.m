@@ -76,6 +76,8 @@
     // Do any additional setup after loading the view.
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    // If we are in a UISplit, then add a displayModeButtonItem
+    self.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -139,10 +141,10 @@
     
     // Is splitVC's table visible?
     if (displayMode == UISplitViewControllerDisplayModePrimaryHidden) {
-        self.navigationItem.rightBarButtonItem = svc.displayModeButtonItem;
+        self.navigationItem.leftBarButtonItem = svc.displayModeButtonItem;
         // NOTE: BarBtn item is provided by the splitVC
     } else {
-        self.navigationItem.rightBarButtonItem = nil;
+        self.navigationItem.leftBarButtonItem = nil;
     }
 }
 
