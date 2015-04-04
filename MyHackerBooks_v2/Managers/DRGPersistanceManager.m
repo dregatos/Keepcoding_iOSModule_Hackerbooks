@@ -31,16 +31,6 @@
     return [[DRGPersistanceManager documentsFolderURL] URLByAppendingPathComponent:@"library.txt"];
 }
 
-/** Document Or cache Path Changes on every launch in iOS 8 */
-+ (NSURL *)currentLocalURL:(NSURL *)storedLocalURL {
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSURL *newURL = [documentsURL URLByAppendingPathComponent:[storedLocalURL lastPathComponent] isDirectory:NO];
-    
-    return newURL;
-}
-
 #pragma mark - Save OR Load library
 
 + (BOOL)saveLibraryOnDocumentsFolder:(DRGLibrary *)aLibrary {
@@ -91,9 +81,8 @@
 }
 
 + (UIImage *)loadCoverImageOfBook:(DRGBook *)aBook {
-    NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.coverImageURL];
-    NSLog(@"Cover Image %@ LOADED from Documents/",[url lastPathComponent]);
-    return [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+    NSLog(@"Cover Image %@ LOADED from Documents/",[aBook.coverImageURL lastPathComponent]);
+    return [UIImage imageWithData:[NSData dataWithContentsOfURL:aBook.coverImageURL]];
 }
 
 #pragma mark - Manage PDF files
@@ -109,9 +98,8 @@
 }
 
 + (NSData *)loadPDFFileOfBook:(DRGBook *)aBook {
-    NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.PDFFileURL];
-    NSLog(@"PDF file %@ LOADED from Documents/",[url lastPathComponent]);
-    return [NSData dataWithContentsOfURL:url];
+    NSLog(@"PDF file %@ LOADED from Documents/",[aBook.PDFFileURL lastPathComponent]);
+    return [NSData dataWithContentsOfURL:aBook.PDFFileURL];
 }
 
 #pragma mark - Helpers
