@@ -72,6 +72,9 @@ NSString * const CustomCell = @"CustomCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Notifications **********************
+    [self registerForNotifications];
+    
     // Register custom cell
     [self.tableView registerNib:[UINib nibWithNibName:@"DRGBookViewCell" bundle:nil] forCellReuseIdentifier:CustomCell];
 }
@@ -79,14 +82,14 @@ NSString * const CustomCell = @"CustomCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // Notifications **********************
-    [self registerForNotifications];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [self unregisterForNotifications];   //optionally we can unregister a notification when the view disappears
+    // NOTE: we cannot unregister here on iPhone version
+    //[self unregisterForNotifications];   //optionally we can unregister a notification when the view disappears
 }
 
 - (void)didReceiveMemoryWarning {
