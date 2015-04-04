@@ -47,7 +47,7 @@
 
 - (void)didUpdateBookContent:(DRGBook *)aBook {
     
-    if ([self.books containsObject:aBook]) {  //Only if belong to our Library
+    if ([self.books containsObject:aBook]) {  //Only if it belongs to our Library
         
         // Update content of library
         NSMutableArray *mList = [self.books mutableCopy];

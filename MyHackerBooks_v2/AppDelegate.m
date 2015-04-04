@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 
+#import "Settings.h"
+
 #import "DRGLibrary.h"
 #import "DRGDownloadManager.h"
 #import "DRGPersistanceManager.h"
@@ -30,6 +32,15 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 
     // Appearance
 //    [self customiseAppeareance];
+    
+    /** First selected character for iPad */
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    if (![def objectForKey:LAST_SELECTED_BOOK]) {
+        // Default value
+        [def setObject:@[@1,@0] forKey:LAST_SELECTED_BOOK];
+        // Just in case...
+        [def synchronize];
+    }
     
     // Get our Model ***
     DRGLibrary *library = [self getLibrary];
@@ -130,14 +141,9 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     
     // Create the controllers
     DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibrary:library style:UITableViewStyleGrouped];
-    DRGBook *visibleBook;
-    if (library.favoriteBooksCount) {
-        visibleBook = [[library favoriteBookList] firstObject];
-    } else {
-        visibleBook = [library bookForTag:[[library tags] firstObject] atIndex:0];
-    }
+    DRGBook *lastSelectedBook = [self lastSelectedBookOfLibrary:library];
     
-    DRGBookDetailVC *bookVC = [[DRGBookDetailVC alloc] initWithBook:visibleBook ofLibrary:library];
+    DRGBookDetailVC *bookVC = [[DRGBookDetailVC alloc] initWithBook:lastSelectedBook ofLibrary:library];
     
     // Create navigators
     UINavigationController *leftController = [[UINavigationController alloc] initWithRootViewController:tableVC];
@@ -152,6 +158,23 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     tableVC.delegate = bookVC;
     
     return splitVC;
+}
+
+- (DRGBook *)lastSelectedBookOfLibrary:(DRGLibrary *)library {
+    
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    NSArray *coord = [settings objectForKey:LAST_SELECTED_BOOK];
+    NSUInteger section = [coord[0] integerValue];
+    NSUInteger row = [coord[1] integerValue];
+    
+    DRGBook *book;
+    if (section == FAVORITE_SECTION_INDEX) {
+        book = [[library favoriteBookList] objectAtIndex:row];
+    } else {
+        NSString *tag = [[library tags] objectAtIndex:section-1];
+        book = [library bookForTag:tag atIndex:row];
+    }
+    return book;
 }
 
 
