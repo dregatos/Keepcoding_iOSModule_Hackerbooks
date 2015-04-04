@@ -14,6 +14,8 @@
 
 #import "DRGLibraryTableVCDelegate.h"
 
+#define FAVORITE_SECTION_INDEX 0
+
 @interface DRGLibraryTableVC : UITableViewController <DRGLibraryTableVCDelegate>
 
 // delegate

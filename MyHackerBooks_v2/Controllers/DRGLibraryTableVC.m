@@ -10,13 +10,12 @@
 #import "DRGBookDetailVC.h"
 
 #import "NotificationKeys.h"
+#import "Settings.h"
 
 #import "DRGLibrary.h"
 #import "DRGBook.h"
 
 #import "DRGBookViewCell.h"
-
-#define FAVORITE_SECTION_INDEX 0
 
 @interface DRGLibraryTableVC ()
 
@@ -65,6 +64,7 @@ NSString * const CustomCell = @"CustomCell";
     self.library = updatedLibrary;
     // Update content view
     [self.tableView reloadData];
+    [self selectLastSelectedBook];
 }
 
 #pragma mark - Lifecycle
@@ -82,7 +82,7 @@ NSString * const CustomCell = @"CustomCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    
+    [self selectLastSelectedBook];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -147,6 +147,14 @@ NSString * const CustomCell = @"CustomCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    // Save coordinates of last selected character
+    NSArray *coord = @[@(indexPath.section),@(indexPath.row)];
+    [[NSUserDefaults standardUserDefaults] setObject:coord forKey:LAST_SELECTED_BOOK];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    // Select row animation
+    [self selectLastSelectedBook];
+    
     // Get data for indexPath
     DRGBook *book = [self bookAtIndexPath:indexPath];
     
@@ -186,6 +194,15 @@ NSString * const CustomCell = @"CustomCell";
 
 - (NSString *)tagAtIndex:(NSUInteger)index {
     return [[self.library tags] objectAtIndex:index];
+}
+
+- (void)selectLastSelectedBook {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        // Tablet
+        NSArray *coord = [[NSUserDefaults standardUserDefaults] objectForKey:LAST_SELECTED_BOOK];
+        NSIndexPath *lastIndex = [NSIndexPath indexPathForRow:[coord[1] integerValue] inSection:[coord[0] integerValue]];
+        [self.tableView selectRowAtIndexPath:lastIndex animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+    }
 }
 
 #pragma mark - DRGLibraryTableVCDelegate

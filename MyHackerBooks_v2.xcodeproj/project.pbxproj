@@ -47,6 +47,7 @@
 		071AB7F71AC5613D00AAAC78 /* DRGSimplePDFVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGSimplePDFVC.h; sourceTree = "<group>"; };
 		071AB7F81AC5613D00AAAC78 /* DRGSimplePDFVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGSimplePDFVC.m; sourceTree = "<group>"; };
 		071AB7F91AC5613D00AAAC78 /* DRGSimplePDFVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DRGSimplePDFVC.xib; sourceTree = "<group>"; };
+		074A08571AD0410B008371F0 /* Settings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
 		0757280D1AC414D000B2FB85 /* MyHackerBooks_v2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyHackerBooks_v2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		075728111AC414D000B2FB85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		075728121AC414D000B2FB85 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -149,6 +150,7 @@
 		0757280F1AC414D000B2FB85 /* MyHackerBooks_v2 */ = {
 			isa = PBXGroup;
 			children = (
+				074A08571AD0410B008371F0 /* Settings.h */,
 				07E6C3D51AC943AF0061FCFA /* NotificationKeys.h */,
 				077DFEC11AC4434600EE845B /* AppDelegate.h */,
 				077DFEC21AC4434600EE845B /* AppDelegate.m */,
