@@ -85,13 +85,15 @@
     NSData *imageData = UIImageJPEGRepresentation(image, 1.);
     NSURL *coverLocalURL = [DRGPersistanceManager saveData:imageData
                                                onFolderURL:[DRGPersistanceManager documentsFolderURL]
-                                                  withName:aBook.title
+                                                  withName:[aBook.title stringByReplacingOccurrencesOfString:@" " withString:@""]
                                               andExtension:@"jpg"];
     return coverLocalURL;
 }
 
 + (UIImage *)loadCoverImageOfBook:(DRGBook *)aBook {
     NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.coverImageURL];
+    /** Update URL*/
+    [aBook updateCoverImageURL:url];
     NSLog(@"Cover Image %@ LOADED from Documents/",[url lastPathComponent]);
     return [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
 }
@@ -103,13 +105,15 @@
     // Save the cover image
     NSURL *pdfLocalURL = [DRGPersistanceManager saveData:pdfData
                                              onFolderURL:[DRGPersistanceManager documentsFolderURL]
-                                                withName:aBook.title
+                                                withName:[aBook.title stringByReplacingOccurrencesOfString:@" " withString:@""]
                                             andExtension:@"pdf"];
     return pdfLocalURL;
 }
 
 + (NSData *)loadPDFFileOfBook:(DRGBook *)aBook {
     NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.PDFFileURL];
+    /** Update URL*/
+    [aBook updatePDFFileURL:url];
     NSLog(@"PDF file %@ LOADED from Documents/",[url lastPathComponent]);
     return [NSData dataWithContentsOfURL:url];
 }

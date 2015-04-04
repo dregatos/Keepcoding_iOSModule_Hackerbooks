@@ -10,10 +10,12 @@
 #import "DRGDownloadManager.h"
 #import "DRGBook.h"
 #import "DRGLibrary.h"
-#import "DRGSimplePDFVC.h"
 #import "NotificationKeys.h"
 
-@interface DRGBookDetailVC ()
+#import "DRGPDFReaderVC.h"
+#import "ReaderDocument.h"
+
+@interface DRGBookDetailVC () <ReaderViewControllerDelegate>
 
 @property (nonatomic, readwrite) DRGBook *book;
 @property (nonatomic, readwrite) DRGLibrary *library;
@@ -105,8 +107,33 @@
 
 - (IBAction)readThisBookBtnPressed:(UIButton *)sender {
     
-    DRGSimplePDFVC *pdfVC = [[DRGSimplePDFVC alloc] initWithBook:self.book];
-    [self.navigationController pushViewController:pdfVC animated:YES];
+    /** 1. Download OR Load pdf */
+    // NOTE: We must call downloadPDFForBook:ofLibrary: even if we are not using pdfData
+    //       because this method updates the value of PDFFileURL.
+    NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book ofLibrary:self.library];
+    if (!pdfData) {
+        NSLog(@"Sorry. This book is not available.");
+        return;
+    }
+    
+    /** 2. Read book */
+    NSString *phrase = nil; // Document password (for unlocking most encrypted PDF files)
+    NSString *filePath = [self.book.PDFFileURL path];
+    NSLog(@"PDF filePath for ReaderDocument: %@", filePath);
+    
+    ReaderDocument *document = [ReaderDocument withDocumentFilePath:filePath password:phrase];
+    
+    /** 3. Push ReaderViewController */
+    if (document != nil) { // Must have a valid ReaderDocument object in order to proceed with things
+        
+        DRGPDFReaderVC *pdfVC = [[DRGPDFReaderVC alloc] initWithReaderDocument:document];
+        
+        pdfVC.delegate = self; // Set the ReaderViewController delegate to self
+        [self.navigationController pushViewController:pdfVC animated:YES];
+        
+    } else  {
+        NSLog(@"%s [ReaderDocument withDocumentFilePath:'%@' password:'%@'] failed.", __FUNCTION__, filePath, phrase);
+    }
 }
 
 - (IBAction)favoriteBtnPressed:(UIButton *)sender {
@@ -155,5 +182,10 @@
     [self updateViewContent];
 }
 
+#pragma mark - ReaderViewControllerDelegate methods
+
+- (void)dismissReaderViewController:(ReaderViewController *)viewController {
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 @end

@@ -21,6 +21,8 @@
 		0757284F1AC4280C00B2FB85 /* DRGLibrarySearcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 0757284E1AC4280C00B2FB85 /* DRGLibrarySearcher.m */; };
 		075728561AC432D000B2FB85 /* DRGPersistanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 075728551AC432D000B2FB85 /* DRGPersistanceManager.m */; };
 		075728591AC438D500B2FB85 /* DRGDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 075728581AC438D500B2FB85 /* DRGDownloadManager.m */; };
+		0762044C1ACDD09B00CB8EAE /* DRGPDFReaderVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0762044A1ACDD09B00CB8EAE /* DRGPDFReaderVC.m */; };
+		0762044D1ACDD09B00CB8EAE /* DRGPDFReaderVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0762044B1ACDD09B00CB8EAE /* DRGPDFReaderVC.xib */; };
 		077DFEC31AC4434600EE845B /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 077DFEC21AC4434600EE845B /* AppDelegate.m */; };
 		07A8C8891ACAF8E7009EBA93 /* DRGBookViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A8C8871ACAF8E7009EBA93 /* DRGBookViewCell.m */; };
 		07A8C88A1ACAF8E7009EBA93 /* DRGBookViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07A8C8881ACAF8E7009EBA93 /* DRGBookViewCell.xib */; };
@@ -65,6 +67,13 @@
 		075728551AC432D000B2FB85 /* DRGPersistanceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGPersistanceManager.m; sourceTree = "<group>"; };
 		075728571AC438D500B2FB85 /* DRGDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGDownloadManager.h; sourceTree = "<group>"; };
 		075728581AC438D500B2FB85 /* DRGDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGDownloadManager.m; sourceTree = "<group>"; };
+		076204491ACDD09B00CB8EAE /* DRGPDFReaderVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGPDFReaderVC.h; sourceTree = "<group>"; };
+		0762044A1ACDD09B00CB8EAE /* DRGPDFReaderVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DRGPDFReaderVC.m; sourceTree = "<group>"; };
+		0762044B1ACDD09B00CB8EAE /* DRGPDFReaderVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DRGPDFReaderVC.xib; sourceTree = "<group>"; };
+		0762044E1ACDE33800CB8EAE /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		076204501ACDE34200CB8EAE /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		076204521ACDE34D00CB8EAE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		076204541ACDE35900CB8EAE /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		077DFEC11AC4434600EE845B /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		077DFEC21AC4434600EE845B /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		07A8C8861ACAF8E7009EBA93 /* DRGBookViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRGBookViewCell.h; sourceTree = "<group>"; };
@@ -110,6 +119,9 @@
 				071AB7F71AC5613D00AAAC78 /* DRGSimplePDFVC.h */,
 				071AB7F81AC5613D00AAAC78 /* DRGSimplePDFVC.m */,
 				071AB7F91AC5613D00AAAC78 /* DRGSimplePDFVC.xib */,
+				076204491ACDD09B00CB8EAE /* DRGPDFReaderVC.h */,
+				0762044A1ACDD09B00CB8EAE /* DRGPDFReaderVC.m */,
+				0762044B1ACDD09B00CB8EAE /* DRGPDFReaderVC.xib */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -225,6 +237,10 @@
 		E4832FFAD43016D91E57F629 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				076204541ACDE35900CB8EAE /* ImageIO.framework */,
+				076204521ACDE34D00CB8EAE /* QuartzCore.framework */,
+				076204501ACDE34200CB8EAE /* MessageUI.framework */,
+				0762044E1ACDE33800CB8EAE /* CoreGraphics.framework */,
 				75006AE469D45F323570DF8C /* libPods-MyHackerBooks_v2.a */,
 			);
 			name = Frameworks;
@@ -313,6 +329,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0762044D1ACDD09B00CB8EAE /* DRGPDFReaderVC.xib in Resources */,
 				071AB7F61AC54C1000AAAC78 /* DRGBookDetailVC.xib in Resources */,
 				071AB7FB1AC5613D00AAAC78 /* DRGSimplePDFVC.xib in Resources */,
 				0757281B1AC414D000B2FB85 /* LaunchScreen.xib in Resources */,
@@ -372,6 +389,7 @@
 				07A8C8891ACAF8E7009EBA93 /* DRGBookViewCell.m in Sources */,
 				075728451AC4259C00B2FB85 /* DRGBook.m in Sources */,
 				071AB7FA1AC5613D00AAAC78 /* DRGSimplePDFVC.m in Sources */,
+				0762044C1ACDD09B00CB8EAE /* DRGPDFReaderVC.m in Sources */,
 				070ECE3C1AC5BEB60040E672 /* DRGBookDetailVC.m in Sources */,
 				075728461AC4259C00B2FB85 /* DRGLibrary.m in Sources */,
 				075728561AC432D000B2FB85 /* DRGPersistanceManager.m in Sources */,
