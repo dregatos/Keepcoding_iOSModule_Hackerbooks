@@ -28,7 +28,7 @@
     If requested cover image:
  
     1. was previously download & stored, then it
-    returns the local copy AND update the coverImageURL of the book.
+    returns the local copy.
  
     2. is not stored on disk, then download, store it,
     and UPDATE the library.
@@ -41,7 +41,7 @@
     If requested PDF file:
 
     1. was previously download & stored, then it
-    returns the local copy AND update the PDFFileURL of the book.
+    returns the local copy.
 
     2. is not stored on disk, then download, store it,
     and UPDATE the library.

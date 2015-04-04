@@ -81,11 +81,8 @@
 }
 
 + (UIImage *)loadCoverImageOfBook:(DRGBook *)aBook {
-    NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.coverImageURL];
-    /** Update URL*/
-    [aBook updateCoverImageURL:url];
-    NSLog(@"Cover Image %@ LOADED from Documents/",[url lastPathComponent]);
-    return [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+    NSLog(@"Cover Image %@ LOADED from Documents/",[aBook.coverImageURL lastPathComponent]);
+    return [UIImage imageWithData:[NSData dataWithContentsOfURL:aBook.coverImageURL]];
 }
 
 #pragma mark - Manage PDF files
@@ -101,11 +98,8 @@
 }
 
 + (NSData *)loadPDFFileOfBook:(DRGBook *)aBook {
-    NSURL *url = [DRGPersistanceManager currentLocalURL:aBook.PDFFileURL];
-    /** Update URL*/
-    [aBook updatePDFFileURL:url];
-    NSLog(@"PDF file %@ LOADED from Documents/",[url lastPathComponent]);
-    return [NSData dataWithContentsOfURL:url];
+    NSLog(@"PDF file %@ LOADED from Documents/",[aBook.PDFFileURL lastPathComponent]);
+    return [NSData dataWithContentsOfURL:aBook.PDFFileURL];
 }
 
 #pragma mark - Helpers

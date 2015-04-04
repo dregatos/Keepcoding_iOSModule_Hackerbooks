@@ -107,23 +107,22 @@
 
 - (IBAction)readThisBookBtnPressed:(UIButton *)sender {
     
-    /** 1. Download OR Load pdf */
-    // NOTE: We must call downloadPDFForBook:ofLibrary: even if we are not using pdfData
-    //       because this method updates the value of PDFFileURL.
-    NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book ofLibrary:self.library];
-    if (!pdfData) {
-        NSLog(@"Sorry. This book is not available.");
+    /** 1. Download pdf */
+    if (![self.book.PDFFileURL isFileURL]) {
+        NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book ofLibrary:self.library];
+        if (!pdfData) { NSLog(@"Sorry. This book is not available."); }
         return;
     }
     
-    /** 2. Read book */
+    /** 2. Show pdf */
+    // Create  ReaderDocument
     NSString *phrase = nil; // Document password (for unlocking most encrypted PDF files)
     NSString *filePath = [self.book.PDFFileURL path];
     NSLog(@"PDF filePath for ReaderDocument: %@", filePath);
     
     ReaderDocument *document = [ReaderDocument withDocumentFilePath:filePath password:phrase];
     
-    /** 3. Push ReaderViewController */
+    // Push ReaderViewController
     if (document != nil) { // Must have a valid ReaderDocument object in order to proceed with things
         
         DRGPDFReaderVC *pdfVC = [[DRGPDFReaderVC alloc] initWithReaderDocument:document];
