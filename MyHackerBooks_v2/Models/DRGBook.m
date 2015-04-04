@@ -80,6 +80,22 @@
 
 #pragma mark - Properties
 
+- (NSURL *)coverImageURL {
+    if ([_coverImageURL isFileURL]) {
+        return [self currentLocalURL:_coverImageURL];
+    }
+    
+    return _coverImageURL;
+}
+
+- (NSURL *)PDFFileURL {
+    if ([_PDFFileURL isFileURL]) {
+        return [self currentLocalURL:_PDFFileURL];
+    }
+    
+    return _PDFFileURL;
+}
+
 - (void)updateCoverImageURL:(NSURL *)newURL {
     self.coverImageURL = newURL;
 }
@@ -118,6 +134,16 @@
 
 - (BOOL)isPDFLocallyStored {
     return [self.PDFFileURL isFileURL];
+}
+
+/** Document Or cache Path Changes on every launch in iOS 8 */
+- (NSURL *)currentLocalURL:(NSURL *)storedLocalURL {
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *newURL = [documentsURL URLByAppendingPathComponent:[storedLocalURL lastPathComponent] isDirectory:NO];
+    
+    return newURL;
 }
 
 @end

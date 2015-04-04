@@ -31,16 +31,6 @@
     return [[DRGPersistanceManager documentsFolderURL] URLByAppendingPathComponent:@"library.txt"];
 }
 
-/** Document Or cache Path Changes on every launch in iOS 8 */
-+ (NSURL *)currentLocalURL:(NSURL *)storedLocalURL {
-    
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *documentsURL = [[fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSURL *newURL = [documentsURL URLByAppendingPathComponent:[storedLocalURL lastPathComponent] isDirectory:NO];
-    
-    return newURL;
-}
-
 #pragma mark - Save OR Load library
 
 + (BOOL)saveLibraryOnDocumentsFolder:(DRGLibrary *)aLibrary {
