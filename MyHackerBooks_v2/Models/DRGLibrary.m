@@ -106,7 +106,7 @@
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"%@: Library | Number of books: %lu | Number of tags:%lu",
-            [self class], [self booksCount], [[self tags] count]];
+            [self class], (unsigned long)[self booksCount], (unsigned long)[[self tags] count]];
 }
 
 
