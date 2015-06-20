@@ -120,12 +120,6 @@ NSString * const CustomCell = @"CustomCell";
     // Configure the cell...
     cell.bookTitle.text = book.title;
     
-    NSString *lastSelectedTitle = [[NSUserDefaults standardUserDefaults] objectForKey:LAST_SELECTED_BOOK];
-    if ([book.title isEqualToString:lastSelectedTitle]) {
-        // If selected book isFavorite, then select it on the Favorite section
-        [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-    }
-    
     return cell;
 }
 
@@ -150,6 +144,9 @@ NSString * const CustomCell = @"CustomCell";
     [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_WAS_SELECTED_NOTIFICATION_NAME
                                                         object:self
                                                       userInfo:dict];
+    
+    // DeSelect Row
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
