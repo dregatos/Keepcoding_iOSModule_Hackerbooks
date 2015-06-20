@@ -102,7 +102,7 @@
     
     /** 1. Download pdf */
     if (![self.book.PDFFileURL isFileURL]) {
-        NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book ofLibrary:self.library];
+        NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book];
         if (!pdfData) { NSLog(@"Sorry. This book is not available."); }
         return;
     }
