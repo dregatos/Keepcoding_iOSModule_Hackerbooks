@@ -10,14 +10,12 @@
 
 @class DRGBook;
 @class DRGBookDetailVC;
-@class DRGLibrary;
 
 #import "DRGLibraryTableVCDelegate.h"
 
 @interface DRGBookDetailVC : UIViewController <UISplitViewControllerDelegate,DRGLibraryTableVCDelegate>
 
 @property (nonatomic, readonly) DRGBook *book;
-@property (nonatomic, readonly) DRGLibrary *library;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLbl;
 @property (weak, nonatomic) IBOutlet UILabel *authorListLbl;
@@ -26,6 +24,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
 @property (weak, nonatomic) IBOutlet UIButton *readBtn;
 
-- (id)initWithBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary;
+- (id)initWithBook:(DRGBook *)aBook;
 
 @end

@@ -8,17 +8,15 @@
 
 #import "DRGLibrary.h"
 #import "DRGLibraryParser.h"
-#import "DRGLibrarySearcher.h"
 
 #import "NotificationKeys.h"
-
 #import "DRGPersistanceManager.h"
-
 #import "DRGBook.h"
 
 @interface DRGLibrary ()
 
-@property (nonatomic, strong) NSArray *books;             // Full list of books. Unordered
+@property (nonatomic, readwrite) NSMutableArray *books;      // Full list of books. Unordered
+@property (nonatomic, readwrite) NSMutableArray *tags;     // Full list of tags. Unordered
 
 @end
 
@@ -37,72 +35,83 @@
         DRGLibraryParser *parser = [[DRGLibraryParser alloc] init];
         NSArray *books = [parser parseJSONData:jsonData];
         // Get books
-        _books = books;
+        _books = [books mutableCopy];
+        // Notifications
+        [self registerForNotifications];
     }
     
     return self;
 }
 
-#pragma mark - Public methods
+#pragma mark - Properties
 
-- (void)didUpdateBookContent:(DRGBook *)aBook {
-    
-    if ([self.books containsObject:aBook]) {  //Only if it belongs to our Library
-        
-        // Update content of library
-        NSMutableArray *mList = [self.books mutableCopy];
-        NSUInteger index = [mList indexOfObject:aBook];
-        [mList replaceObjectAtIndex:index withObject:aBook];
-        
-        self.books = [mList copy];
-        
-        NSLog(@"Library was updated");
-        
-        // Save updated library
-        [DRGPersistanceManager saveLibraryOnDocumentsFolder:self];
-        
-        // Notify library was updated
-        NSDictionary *dict = @{LIBRARY_KEY:self};
-        [[NSNotificationCenter defaultCenter] postNotificationName:LIBRARY_DID_CHANGE_NOTIFICATION_NAME object:self userInfo:dict];
+- (NSArray *)tags {
+    NSMutableArray *tagList = [[NSMutableArray alloc] init];
+    for (DRGBook *book in self.books) {
+        for (NSString *tag in book.tagList) {
+            if (![tagList containsObject:tag] && tag) {
+                [tagList addObject:tag];
+            }
+        }
     }
+    
+    return tagList;
 }
 
-- (NSArray *)bookList {
-    return [DRGLibrarySearcher bookListAlphabeticallySortedByTitle:self.books];
-}
+#pragma mark - Helpers
 
 - (NSUInteger)booksCount {
     return [self.books count];
 }
 
-- (NSArray *)favoriteBookList {
-    return [DRGLibrarySearcher sortedFavoriteBookList:self.books];
+- (NSUInteger)tagsCount {
+    return [self.tags count];
 }
 
-- (NSUInteger)favoriteBooksCount {
-    NSArray *list = [DRGLibrarySearcher sortedFavoriteBookList:self.books];
-    return [list count];
+- (DRGBook *)bookTitled:(NSString *)bookTitle {
+    
+    if (!bookTitle || [bookTitle isEqualToString:@""]) {
+        return nil;
+    }
+    
+    for (DRGBook *book in self.books) {
+        if ([book.title isEqualToString:bookTitle]) {
+            return book;
+        }
+    }
+    
+    return nil;
 }
 
-- (NSArray *)tags {
-    return [DRGLibrarySearcher sortedTagListForBooks:self.books];
+#pragma mark - Notification
+
+- (void)dealloc {
+    [self unregisterForNotifications];
 }
 
-- (NSUInteger)bookCountForTag:(NSString *)tag {
-    NSArray *list = [DRGLibrarySearcher sortedBookList:self.books forTag:tag];
-    return [list count];
+- (void)registerForNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(notifyBookDidChange:)
+                                                 name:BOOK_FAVORITE_STATUS_CHANGED_NOTIFICATION_NAME
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(notifyBookDidChange:)
+                                                 name:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
+                                               object:nil];
 }
 
-- (NSArray *)booksForTag:(NSString *)tag {
-    return [DRGLibrarySearcher sortedBookList:self.books forTag:tag];
+- (void)unregisterForNotifications {
+    // Clear out _all_ observations that this object was making
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (DRGBook *)bookForTag:(NSString *)tag atIndex:(NSUInteger)index {
-    NSArray *list = [DRGLibrarySearcher sortedBookList:self.books forTag:tag];
-    return [list objectAtIndex:index];
+// LIBRARY_DID_CHANGE_NOTIFICATION_NAME
+- (void)notifyBookDidChange:(NSNotification *)notification {
+    // Save library
+    [DRGPersistanceManager saveLibraryOnDocumentsFolder:self];
 }
 
-#pragma mark - Utils
+#pragma mark - Overwritten
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"%@: Library | Number of books: %lu | Number of tags:%lu",

@@ -10,10 +10,9 @@
 #import "DRGBook.h"
 #import "NotificationKeys.h"
 #import "DRGDownloadManager.h"
-#import "DRGLibrary.h"
 #import "DRGBookDetailVC.h"
 
-@interface DRGSimplePDFVC ()
+@interface DRGSimplePDFVC () <UIAlertViewDelegate>
 
 @property (nonatomic, readwrite) DRGBook *book;
 
@@ -98,11 +97,14 @@
 - (void)updateViewContent {
     self.title = self.book.title;
     
-    DRGBookDetailVC *parentVC = (DRGBookDetailVC *)[self.navigationController.viewControllers firstObject];
-    DRGLibrary *library = parentVC.library;
-    NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book ofLibrary:library];
+    NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book];
     if (!pdfData) {
         NSLog(@"Sorry. This book is not available.");
+        [[[UIAlertView alloc]initWithTitle:@"Sorry. This book is not available."
+                                   message:nil
+                                  delegate:self
+                         cancelButtonTitle:@"OK"
+                         otherButtonTitles:nil] show];
         return;
     }
     // Start loading PDF
@@ -110,7 +112,16 @@
 }
 
 
-#pragma mark - UIWebViewDelegate
+#pragma mark - UIAlertViewDelegate
 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+- (void)alertViewCancel:(UIAlertView *)alertView {
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 @end

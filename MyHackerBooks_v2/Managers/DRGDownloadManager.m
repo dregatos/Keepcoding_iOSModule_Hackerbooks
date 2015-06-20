@@ -27,7 +27,7 @@
 
 #pragma mark - Cover Images
 
-+ (UIImage *)downloadCoverImageForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary{
++ (UIImage *)downloadCoverImageForBook:(DRGBook *)aBook {
 
     if ([aBook.coverImageURL isFileURL]) {
         // If cover image was stored on disk, then return it.
@@ -41,8 +41,6 @@
         if (coverLocalURL) { // local URL
             // Update book info
             [aBook updateCoverImageURL:coverLocalURL];
-            // Update my library
-            [aLibrary didUpdateBookContent:aBook];
         }
         
         return cover;
@@ -51,7 +49,7 @@
 
 #pragma mark - PDF files
 
-+ (NSData *)downloadPDFForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary {
++ (NSData *)downloadPDFForBook:(DRGBook *)aBook {
     
     if ([aBook.PDFFileURL isFileURL]) {
         // If cover image was stored on disk, then return it.
@@ -64,8 +62,6 @@
         if (pdfLocalURL) { // local URL
             // Update book info
             [aBook updatePDFFileURL:pdfLocalURL];
-            // Update my library
-            [aLibrary didUpdateBookContent:aBook];
         }
         
         return pdfData;

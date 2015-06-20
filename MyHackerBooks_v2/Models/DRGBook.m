@@ -7,17 +7,27 @@
 //
 
 #import "DRGBook.h"
+#import "NotificationKeys.h"
 
 @interface DRGBook ()
 
-@property (nonatomic, readwrite) NSArray *authorList;   // Readwrite. Arr of NSStrings
-@property (nonatomic, readwrite) NSArray *tagList;      // Readwrite. Arr of NSStrings
-
-@property (nonatomic, readwrite) BOOL isFavorite;
+@property (nonatomic, readwrite) NSString *title;               // Readwrite
+@property (nonatomic, readwrite) NSArray *authorList;           // Readwrite. Arr of NSStrings
+@property (nonatomic, readwrite) NSMutableArray *tagList;       // Readwrite. Arr of NSStrings
+@property (nonatomic, readwrite) NSURL *coverImageURL;          // Readwrite
+@property (nonatomic, readwrite) NSURL *PDFFileURL;             // Readwrite
+@property (nonatomic, readwrite) BOOL isFavorite;               // Readwrite
 
 @end
 
+NSString * const FAVORITE_TAG = @"Favorite";
+
 @implementation DRGBook
+
+- (NSMutableArray *)tagList  {
+    if  (!_tagList) _tagList = [[NSMutableArray alloc] init];
+    return _tagList;
+}
 
 #pragma mark - Init
 
@@ -28,7 +38,12 @@
                     andPDFURL:(NSURL *)PDFURL
                 andIsFavorite:(BOOL)isFavorite {
     
-    return [[self alloc] initWithTitle:title authors:authorList tags:tagList coverImageURL:coverURL PDFURL:PDFURL andIsFavorite:isFavorite];
+    return [[self alloc] initWithTitle:title
+                               authors:authorList
+                                  tags:tagList
+                         coverImageURL:coverURL
+                                PDFURL:PDFURL
+                         andIsFavorite:isFavorite];
 }
 
 - (id)initWithTitle:(NSString *)title
@@ -41,41 +56,13 @@
     if (self = [super init]) {
         _title = title;
         _authorList = authorList;
-        _tagList = tagList;
+        _tagList = [tagList mutableCopy];
         _coverImageURL = coverURL;
         _PDFFileURL = PDFURL;
         _isFavorite = isFavorite;
     }
     
     return self;
-}
-
-#pragma mark - JSON
-
-- (id)initWithDictionary:(NSDictionary *)aDict {
-    
-    return [self initWithTitle:[aDict objectForKey:@"title"]
-                       authors:[self extractElementsForKey:@"authors" onDictionary:aDict]
-                          tags:[self extractElementsForKey:@"tags" onDictionary:aDict]
-                 coverImageURL:[NSURL URLWithString:[aDict objectForKey:@"image_url"]]
-                        PDFURL:[NSURL URLWithString:[aDict objectForKey:@"pdf_url"]]
-                 andIsFavorite:[[aDict objectForKey:@"favorite"] boolValue]];
-}
-
-- (NSDictionary *)proxyForJSON {
-    
-    NSString *imString = [NSString stringWithFormat:@"%@", self.coverImageURL];
-    NSString *pdfString = [NSString stringWithFormat:@"%@",self.PDFFileURL];
-    NSString *authorString = [self.authorList componentsJoinedByString:@","];
-    NSString *tagString = [self.tagList componentsJoinedByString:@","];
-
-    return @{@"authors"   : authorString ? authorString : @"",
-             @"image_url" : imString ? imString : @"",
-             @"pdf_url"   : pdfString ? pdfString : @"",
-             @"tags"      : tagString ? tagString : @"",
-             @"title"     : self.title ? self.title : @"",
-             @"favorite"  : @(self.isFavorite)
-            };
 }
 
 #pragma mark - Properties
@@ -98,38 +85,34 @@
 
 - (void)updateCoverImageURL:(NSURL *)newURL {
     self.coverImageURL = newURL;
+    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
+                                                        object:nil
+                                                      userInfo:nil];
 }
 
 - (void)updatePDFFileURL:(NSURL *)newURL {
     self.PDFFileURL = newURL;
+    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
+                                                        object:nil
+                                                      userInfo:nil];
 }
 
 #pragma mark - Utils
 
-- (BOOL)isEqual:(id)object {
-    
-    if ([object isKindOfClass:[self class]]) {
-        return [self.title isEqualToString:((DRGBook *)object).title];
-    }
-    
-    return NO;
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"%@ Book |\nTitle: %@\nAuthors: %@\nTags: %@\nCover: %@\nPDF: %@\nisFavorite:%i",
-            [self class], self.title, self.authorList, self.tagList, self.coverImageURL, self.PDFFileURL, self.isFavorite];
-}
-
-- (NSArray *)extractElementsForKey:(NSString *)key onDictionary:(NSDictionary *)aDict {
-    
-    NSString *elements = [aDict objectForKey:key];
-    NSArray *elementArr = [elements componentsSeparatedByString:@","];
-    
-    return elementArr;
-}
-
 - (void)toggleFavoriteStatus {
     self.isFavorite = !self.isFavorite;
+    
+    if (self.isFavorite) {
+        [self.tagList addObject:FAVORITE_TAG];
+    } else {
+        [self.tagList removeObject:FAVORITE_TAG];
+    }
+    
+    // Notify change
+    NSDictionary *info = @{BOOK_KEY:self};
+    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_FAVORITE_STATUS_CHANGED_NOTIFICATION_NAME
+                                                        object:nil
+                                                      userInfo:info];
 }
 
 - (BOOL)isPDFLocallyStored {
@@ -144,6 +127,22 @@
     NSURL *newURL = [documentsURL URLByAppendingPathComponent:[storedLocalURL lastPathComponent] isDirectory:NO];
     
     return newURL;
+}
+
+#pragma mark - Overwritten
+
+- (BOOL)isEqual:(id)object {
+    
+    if ([object isKindOfClass:[self class]]) {
+        return [self.title isEqualToString:((DRGBook *)object).title];
+    }
+    
+    return NO;
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"%@ Book |\nTitle: %@\nAuthors: %@\nTags: %@\nCover: %@\nPDF: %@\nisFavorite:%i",
+            [self class], self.title, self.authorList, self.tagList, self.coverImageURL, self.PDFFileURL, self.isFavorite];
 }
 
 @end
