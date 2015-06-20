@@ -9,20 +9,19 @@
 @import UIKit;
 
 @class DRGBook;
-@class DRGLibrary;
+@class DRGLibraryPresenter;
 @class DRGLibraryTableVC;
 
 #import "DRGLibraryTableVCDelegate.h"
-
-#define FAVORITE_SECTION_INDEX 0
 
 @interface DRGLibraryTableVC : UITableViewController <DRGLibraryTableVCDelegate>
 
 // delegate
 @property (nonatomic, weak) id<DRGLibraryTableVCDelegate> delegate;
 
-@property (nonatomic, strong) DRGLibrary *library;
+//@property (nonatomic, strong) DRGLibrary *library;
 
-- (id)initWithLibrary:(DRGLibrary *)aLibrary style:(UITableViewStyle)style;
+- (id)initWithLibraryPresenter:(DRGLibraryPresenter *)libraryPresenter
+                         style:(UITableViewStyle)style;
 
 @end

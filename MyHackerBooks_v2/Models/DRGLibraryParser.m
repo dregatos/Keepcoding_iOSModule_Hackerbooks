@@ -8,6 +8,7 @@
 
 #import "DRGLibraryParser.h"
 #import "DRGBook.h"
+#import "DRGBookParser.h"
 
 @implementation DRGLibraryParser
 
@@ -49,7 +50,7 @@
 }
 
 - (DRGBook *)parseJSONDictionary:(NSDictionary *)jsonDic {
-    return [[DRGBook alloc] initWithDictionary:jsonDic];
+    return [DRGBookParser bookFromDictionary:jsonDic];
 }
 
 @end

@@ -10,7 +10,7 @@
 @import UIKit.UIImage;
 
 @class DRGBook;
-@class  DRGLibrary;
+@class DRGLibrary;
 
 
 /** DESCRIPTION **
@@ -35,7 +35,7 @@
  
     Filename of stored image is = book's title without whitespaces
  */
-+ (UIImage *)downloadCoverImageForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary;
++ (UIImage *)downloadCoverImageForBook:(DRGBook *)aBook;
 
 /**
     If requested PDF file:
@@ -48,6 +48,6 @@
 
     Filename of stored PDF file is = book's title without whitespaces
  */
-+ (NSData *)downloadPDFForBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary;
++ (NSData *)downloadPDFForBook:(DRGBook *)aBook;
 
 @end

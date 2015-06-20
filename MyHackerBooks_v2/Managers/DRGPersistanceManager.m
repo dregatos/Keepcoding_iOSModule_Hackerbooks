@@ -11,6 +11,7 @@
 #import "DRGPersistanceManager.h"
 #import "DRGLibrary.h"
 #import "DRGBook.h"
+#import "DRGBookParser.h"
 
 @interface DRGPersistanceManager ()
 
@@ -38,8 +39,8 @@
     // DRGLibrary -> JSON
     NSError *error;
     NSMutableArray *JSON = [[NSMutableArray alloc] init];
-    for (DRGBook *book in aLibrary.bookList) {
-        NSDictionary *dic = [book proxyForJSON];
+    for (DRGBook *book in aLibrary.books) {
+        NSDictionary *dic = [DRGBookParser proxyForJSON:book];
         [JSON addObject:dic];
     }
     
@@ -104,7 +105,10 @@
 
 #pragma mark - Helpers
 
-+ (NSURL *)saveData:(NSData *)data onFolderURL:(NSURL *)folderURL withName:(NSString *)aName andExtension:(NSString *)aExtension {
++ (NSURL *)saveData:(NSData *)data
+        onFolderURL:(NSURL *)folderURL
+           withName:(NSString *)aName
+       andExtension:(NSString *)aExtension {
     
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];

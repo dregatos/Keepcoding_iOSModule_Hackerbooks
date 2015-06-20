@@ -11,11 +11,14 @@
 #import "Settings.h"
 
 #import "DRGLibrary.h"
+#import "DRGLibraryPresenter.h"
+
 #import "DRGDownloadManager.h"
 #import "DRGPersistanceManager.h"
 
 #import "DRGBookDetailVC.h"
 #import "DRGLibraryTableVC.h"
+
 
 @interface AppDelegate ()
 
@@ -24,7 +27,6 @@
 NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 
 @implementation AppDelegate
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
@@ -37,7 +39,7 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
     if (![def objectForKey:LAST_SELECTED_BOOK]) {
         // Default value
-        [def setObject:@[@1,@0] forKey:LAST_SELECTED_BOOK];
+        [def setObject:@"" forKey:LAST_SELECTED_BOOK];
         // Just in case...
         [def synchronize];
     }
@@ -127,7 +129,9 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 - (UIViewController *)rootViewControllerForPhoneWithModel:(DRGLibrary *)library {
     
     // Create the controllers
-    DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibrary:library style:UITableViewStyleGrouped];
+    DRGLibraryPresenter *presenter = [[DRGLibraryPresenter alloc] initWithLibrary:library];
+    DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibraryPresenter:presenter
+                                                                               style:UITableViewStyleGrouped];
     
     UINavigationController *libraryNav = [[UINavigationController alloc] initWithRootViewController:tableVC];
     
@@ -140,10 +144,12 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 - (UIViewController *)rootViewControllerForPadWithModel:(DRGLibrary *)library {
     
     // Create the controllers
-    DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibrary:library style:UITableViewStyleGrouped];
+    DRGLibraryPresenter *presenter = [[DRGLibraryPresenter alloc] initWithLibrary:library];
+    DRGLibraryTableVC *tableVC = [[DRGLibraryTableVC alloc] initWithLibraryPresenter:presenter
+                                                                               style:UITableViewStyleGrouped];
     DRGBook *lastSelectedBook = [self lastSelectedBookOfLibrary:library];
     
-    DRGBookDetailVC *bookVC = [[DRGBookDetailVC alloc] initWithBook:lastSelectedBook ofLibrary:library];
+    DRGBookDetailVC *bookVC = [[DRGBookDetailVC alloc] initWithBook:lastSelectedBook];
     
     // Create navigators
     UINavigationController *leftController = [[UINavigationController alloc] initWithRootViewController:tableVC];
@@ -163,20 +169,14 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 - (DRGBook *)lastSelectedBookOfLibrary:(DRGLibrary *)library {
     
     NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
-    NSArray *coord = [settings objectForKey:LAST_SELECTED_BOOK];
-    NSUInteger section = [coord[0] integerValue];
-    NSUInteger row = [coord[1] integerValue];
+    NSString *title = [settings objectForKey:LAST_SELECTED_BOOK];
     
-    DRGBook *book;
-    if (section == FAVORITE_SECTION_INDEX) {
-        book = [[library favoriteBookList] objectAtIndex:row];
-    } else {
-        NSString *tag = [[library tags] objectAtIndex:section-1];
-        book = [library bookForTag:tag atIndex:row];
+    DRGBook *book = [library bookTitled:title];
+    if (book) {
+        return book;
     }
-    return book;
+    
+    return [library.books firstObject];
 }
-
-
 
 @end

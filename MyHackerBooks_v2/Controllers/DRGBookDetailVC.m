@@ -18,7 +18,6 @@
 @interface DRGBookDetailVC () <ReaderViewControllerDelegate>
 
 @property (nonatomic, readwrite) DRGBook *book;
-@property (nonatomic, readwrite) DRGLibrary *library;
 
 @end
 
@@ -26,11 +25,10 @@
 
 #pragma mark - Init
 
-- (id)initWithBook:(DRGBook *)aBook ofLibrary:(DRGLibrary *)aLibrary {
+- (id)initWithBook:(DRGBook *)aBook {
 
     if (self = [super init]) {
         _book = aBook;
-        _library = aLibrary;
     }
     
     return self;
@@ -44,9 +42,9 @@
 
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(notifyLibraryDidChange:)
-                                                 name:LIBRARY_DID_CHANGE_NOTIFICATION_NAME
-                                               object:self.library];
+                                             selector:@selector(notifyBookFavoriteStatusDidChange:)
+                                                 name:BOOK_FAVORITE_STATUS_CHANGED_NOTIFICATION_NAME
+                                               object:nil];
 }
 
 - (void)unregisterForNotifications {
@@ -55,20 +53,15 @@
 }
 
 // LIBRARY_DID_CHANGE_NOTIFICATION_NAME
-- (void)notifyLibraryDidChange:(NSNotification *)notification {
+- (void)notifyBookFavoriteStatusDidChange:(NSNotification *)notification {
     
     // Get updated book
-    DRGLibrary *updatedLibrary = notification.userInfo[LIBRARY_KEY];
+    DRGBook *updatedBook = notification.userInfo[BOOK_KEY];
     // Update model
-    self.library = updatedLibrary;
-    for (DRGBook *book in self.library.bookList) {
-        if ([book isEqual:self.book]) { // (= same title, but updated information)
-            self.book = book;
-            break;
-        }
+    if ([self.book isEqual:updatedBook]) {
+        // Update content view
+        [self updateViewContent];
     }
-    // Update content view
-    [self updateViewContent];
 }
 
 #pragma mark - Lifecycle
@@ -140,7 +133,7 @@
     // update book
     [self.book toggleFavoriteStatus];
     // update library
-    [self.library didUpdateBookContent:self.book];
+//    [self.library didUpdateBookContent:self.book];
     // sync view - model
     /** Updated through LIBRARY_DID_CHANGE_NOTIFICATION_NAME */
 }
@@ -152,9 +145,9 @@
     self.title = @"Book Information";
     
     self.titleLbl.text = self.book.title;
-    self.authorListLbl.text = [self.book.authorList componentsJoinedByString:@","];
-    self.tagListLbl.text = [self.book.tagList componentsJoinedByString:@","];
-    self.coverImageView.image = [DRGDownloadManager downloadCoverImageForBook:self.book ofLibrary:self.library];
+    self.authorListLbl.text = [self.book.authorList componentsJoinedByString:@", "];
+    self.tagListLbl.text = [self.book.tagList componentsJoinedByString:@", "];
+    self.coverImageView.image = [DRGDownloadManager downloadCoverImageForBook:self.book];
     self.favoriteBtn.selected = self.book.isFavorite;
     [self.readBtn setTitle:@"Read Book" forState:UIControlStateSelected];
     [self.readBtn setTitle:@"Download Book" forState:UIControlStateNormal];

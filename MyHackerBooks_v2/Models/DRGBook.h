@@ -9,21 +9,18 @@
 @import Foundation;
 @import UIKit.UIImage;
 
+extern NSString * const FAVORITE_TAG;
+
 @interface DRGBook : NSObject
 
-/** Provided by the server */
-@property (nonatomic, copy) NSString *title;            // Copy
-@property (nonatomic, readonly) NSArray *authorList;    // Readonly. Arr of NSStrings
-@property (nonatomic, readonly) NSArray *tagList;       // Readonly. Arr of NSStrings
+@property (nonatomic, readonly) NSString *title;            // Readonly
+@property (nonatomic, readonly) NSArray *authorList;        // Readonly. Arr of NSStrings
+@property (nonatomic, readonly) NSMutableArray *tagList;    // Readonly. Arr of NSStrings
+@property (nonatomic, readonly) NSURL *coverImageURL;       // Readonly. Use updateCoverImageURL: to change it
+@property (nonatomic, readonly) NSURL *PDFFileURL;          // Readonly. Use updatePDFFileURL: to change it
 
-/** If the file was download and saved locally,
-    it will be the local URL, wheter it will be
-    the URL provided by the server. */
-@property (nonatomic, copy) NSURL *coverImageURL;       // Copy
-@property (nonatomic, copy) NSURL *PDFFileURL;          // Copy
-
-/** Determined by the user at runtime. Locally stored */
-@property (nonatomic, readonly) BOOL isFavorite;        // Readonly. User toggleFavoriteStatus: to change it
+/** YES if one of its tag = 'Favorite' */
+@property (nonatomic, readonly) BOOL isFavorite;        // Readonly. Use toggleFavoriteStatus: to change it
 
 #pragma mark - Factory methods
 
@@ -44,13 +41,7 @@
       andIsFavorite:(BOOL)isFavorite;
 
 
-#pragma mark - JSON
-
-- (id)initWithDictionary:(NSDictionary *)aDic;
-
-- (NSDictionary *)proxyForJSON;
-
-#pragma mark - Modify book info
+#pragma mark - Modify book info/status
 
 - (void)toggleFavoriteStatus;
 
