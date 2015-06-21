@@ -49,7 +49,7 @@ NSString * const CustomCell = @"CustomCell";
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(notifyBookFavoriteStatusDidChange:)
-                                                 name:BOOK_FAVORITE_STATUS_CHANGED_NOTIFICATION_NAME
+                                                 name:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
                                                object:nil];
 }
 
@@ -118,7 +118,7 @@ NSString * const CustomCell = @"CustomCell";
     }
     
     // Configure the cell...
-    cell.bookTitle.text = book.title;
+    [cell configureCellForBook:book];
     
     return cell;
 }
@@ -154,7 +154,7 @@ NSString * const CustomCell = @"CustomCell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 60.f;
+    return [DRGBookViewCell height];
 }
 
 #pragma mark - Helpers

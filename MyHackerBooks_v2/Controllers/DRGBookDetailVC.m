@@ -40,8 +40,8 @@
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(notifyBookFavoriteStatusDidChange:)
-                                                 name:BOOK_FAVORITE_STATUS_CHANGED_NOTIFICATION_NAME
-                                               object:nil];
+                                                 name:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
+                                               object:self.book];
 }
 
 - (void)unregisterForNotifications {
@@ -51,14 +51,7 @@
 
 // LIBRARY_DID_CHANGE_NOTIFICATION_NAME
 - (void)notifyBookFavoriteStatusDidChange:(NSNotification *)notification {
-    
-    // Get updated book
-    DRGBook *updatedBook = notification.userInfo[BOOK_KEY];
-    // Update model
-    if ([self.book isEqual:updatedBook]) {
-        // Update content view
-        [self updateViewContent];
-    }
+    [self updateViewContent];
 }
 
 #pragma mark - Lifecycle
@@ -105,10 +98,6 @@
     
     // update book
     [self.book toggleFavoriteStatus];
-    // update library
-//    [self.library didUpdateBookContent:self.book];
-    // sync view - model
-    /** Updated through LIBRARY_DID_CHANGE_NOTIFICATION_NAME */
 }
 
 #pragma mark - Utils

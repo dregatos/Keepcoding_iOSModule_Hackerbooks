@@ -92,10 +92,6 @@
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(notifyBookDidChange:)
-                                                 name:BOOK_FAVORITE_STATUS_CHANGED_NOTIFICATION_NAME
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(notifyBookDidChange:)
                                                  name:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
                                                object:nil];
 }
