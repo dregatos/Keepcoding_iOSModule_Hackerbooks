@@ -13,6 +13,7 @@
 #import "Settings.h"
 
 #import "DRGLibraryPresenter.h"
+#import "DRGLibrary.h"
 #import "DRGBook.h"
 
 #import "DRGBookViewCell.h"
@@ -49,7 +50,7 @@ NSString * const CustomCell = @"CustomCell";
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(notifyBookFavoriteStatusDidChange:)
-                                                 name:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
+                                                 name:BOOK_FAVORITE_STATUS_DID_CHANGED_NOTIFICATION_NAME
                                                object:nil];
 }
 
@@ -58,7 +59,7 @@ NSString * const CustomCell = @"CustomCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-// LIBRARY_DID_CHANGE_NOTIFICATION_NAME
+// BOOK_FAVORITE_STATUS_DID_CHANGED_NOTIFICATION_NAME
 - (void)notifyBookFavoriteStatusDidChange:(NSNotification *)notification {
     // Update content view
     [self.tableView reloadData];
@@ -84,7 +85,7 @@ NSString * const CustomCell = @"CustomCell";
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
+        
     // NOTE: we cannot unregister here on iPhone version
     //[self unregisterForNotifications];   //optionally we can unregister a notification when the view disappears
 }

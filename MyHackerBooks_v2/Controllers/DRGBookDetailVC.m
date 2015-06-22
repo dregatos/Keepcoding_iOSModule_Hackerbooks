@@ -40,7 +40,7 @@
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(notifyBookFavoriteStatusDidChange:)
-                                                 name:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
+                                                 name:BOOK_FAVORITE_STATUS_DID_CHANGED_NOTIFICATION_NAME
                                                object:self.book];
 }
 
@@ -49,7 +49,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-// LIBRARY_DID_CHANGE_NOTIFICATION_NAME
+// BOOK_FAVORITE_STATUS_DID_CHANGED_NOTIFICATION_NAME
 - (void)notifyBookFavoriteStatusDidChange:(NSNotification *)notification {
     [self updateViewContent];
 }

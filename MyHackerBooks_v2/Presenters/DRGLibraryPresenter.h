@@ -13,7 +13,6 @@
 
 @interface DRGLibraryPresenter : NSObject
 
-
 /* 
  Total number of books 
  */
