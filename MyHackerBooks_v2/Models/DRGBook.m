@@ -85,16 +85,10 @@ NSString * const FAVORITE_TAG = @"Favorite";
 
 - (void)updateCoverImageURL:(NSURL *)newURL {
     self.coverImageURL = newURL;
-    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
-                                                        object:nil
-                                                      userInfo:nil];
 }
 
 - (void)updatePDFFileURL:(NSURL *)newURL {
     self.PDFFileURL = newURL;
-    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_INFO_WAS_UPDATED_NOTIFICATION_NAME
-                                                        object:nil
-                                                      userInfo:nil];
 }
 
 #pragma mark - Utils
@@ -109,10 +103,9 @@ NSString * const FAVORITE_TAG = @"Favorite";
     }
     
     // Notify change
-    NSDictionary *info = @{BOOK_KEY:self};
-    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_FAVORITE_STATUS_CHANGED_NOTIFICATION_NAME
-                                                        object:nil
-                                                      userInfo:info];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BOOK_FAVORITE_STATUS_DID_CHANGED_NOTIFICATION_NAME
+                                                        object:self
+                                                      userInfo:nil];
 }
 
 - (BOOL)isPDFLocallyStored {

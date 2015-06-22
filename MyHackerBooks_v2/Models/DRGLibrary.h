@@ -13,13 +13,15 @@
 @interface DRGLibrary : NSObject
 
 @property (nonatomic, readonly) NSMutableArray *books;      // Full list of books. Unordered
-@property (nonatomic, readonly) NSMutableArray *tags;     // Full list of tags. Unordered
+@property (nonatomic, readonly) NSMutableArray *tags;       // Full list of tags. Unordered
 
 #pragma mark - Init
 
 + (instancetype)libraryWithJSONData:(NSData *)jsonData;
 
-- (instancetype)initWithJSONData:(NSData *)jsonData;       
+- (instancetype)initWithJSONData:(NSData *)jsonData;
+
+#pragma mark -
 
 - (DRGBook *)bookTitled:(NSString *)bookTitle;
 

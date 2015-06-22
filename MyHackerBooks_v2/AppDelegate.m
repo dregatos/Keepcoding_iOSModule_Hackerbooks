@@ -22,6 +22,8 @@
 
 @interface AppDelegate ()
 
+@property (nonatomic, strong) DRGLibrary *library;
+
 @end
 
 NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
@@ -45,15 +47,15 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     }
     
     // Get our Model ***
-    DRGLibrary *library = [self getLibrary];
-    NSLog(@"Library description\n%@", [library description]);
+    self.library = [self getLibrary];
+    NSLog(@"Library description\n%@", [self.library description]);
     
     /** Phone or tablet ? */
     UIViewController *rootVC = nil;
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        rootVC = [self rootViewControllerForPadWithModel:library];
+        rootVC = [self rootViewControllerForPadWithModel:self.library];
     } else {
-        rootVC = [self rootViewControllerForPhoneWithModel:library];
+        rootVC = [self rootViewControllerForPhoneWithModel:self.library];
     }
     
     // Assign the root
@@ -71,6 +73,9 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    // Saving Library
+    [DRGPersistanceManager saveLibraryOnDocumentsFolder:self.library];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -117,8 +122,6 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     if (!library) { // If the library wasn't loaded OR we weren't able to load it, then download it.
         NSLog(@"Downloading library...");
         library = [DRGDownloadManager downloadLibraryFromServer];
-        // Save library
-        [DRGPersistanceManager saveLibraryOnDocumentsFolder:library];
         // Update 'WAS_LAUNCHED_BEFORE' flag value
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:WAS_LAUNCHED_BEFORE];
     }

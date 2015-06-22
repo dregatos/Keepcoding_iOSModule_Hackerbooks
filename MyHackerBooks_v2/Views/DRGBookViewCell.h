@@ -8,8 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
+@class DRGBook;
+
 @interface DRGBookViewCell : UITableViewCell
 
-@property (weak, nonatomic) IBOutlet UILabel *bookTitle;
+@property (weak, nonatomic) IBOutlet UIImageView *coverImView;
+@property (weak, nonatomic) IBOutlet UILabel *titleLbl;
+@property (weak, nonatomic) IBOutlet UILabel *authorsLbl;
+@property (weak, nonatomic) IBOutlet UIButton *favoriteBtn;
+
+
++(CGFloat) height;
++(NSString *)cellId;
+
+- (void)configureCellForBook:(DRGBook *)book;
+- (void)reset;
 
 @end
