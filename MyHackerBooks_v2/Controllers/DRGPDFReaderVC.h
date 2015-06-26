@@ -8,11 +8,10 @@
 
 @import UIKit;
 
-#import "ReaderViewController.h"
-
 @class DRGBook;
 
-@interface DRGPDFReaderVC : ReaderViewController
+@interface DRGPDFReaderVC : UIViewController
 
+- (instancetype)initWithBook:(DRGBook *)aBook;
 
 @end

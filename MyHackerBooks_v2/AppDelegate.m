@@ -75,7 +75,9 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
     // Saving Library
-    [DRGPersistanceManager saveLibraryOnDocumentsFolder:self.library];
+    if (self.library) {
+        [DRGPersistanceManager saveLibraryOnDocumentsFolder:self.library];
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -122,6 +124,7 @@ NSString * const WAS_LAUNCHED_BEFORE = @"WAS_LAUNCHED_BEFORE";
     if (!library) { // If the library wasn't loaded OR we weren't able to load it, then download it.
         NSLog(@"Downloading library...");
         library = [DRGDownloadManager downloadLibraryFromServer];
+        [DRGPersistanceManager saveLibraryOnDocumentsFolder:library];
         // Update 'WAS_LAUNCHED_BEFORE' flag value
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:WAS_LAUNCHED_BEFORE];
     }

@@ -15,7 +15,7 @@
 #import "DRGPDFReaderVC.h"
 #import "ReaderDocument.h"
 
-@interface DRGBookDetailVC () <ReaderViewControllerDelegate>
+@interface DRGBookDetailVC ()
 
 @property (nonatomic, readwrite) DRGBook *book;
 
@@ -71,6 +71,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    self.navigationController.navigationBarHidden = NO;
+    
     [self updateViewContent];
     
     // Notifications **********************
@@ -92,34 +94,9 @@
 #pragma mark - IBActions
 
 - (IBAction)readThisBookBtnPressed:(UIButton *)sender {
-    
-    /** 1. Download pdf */
-    if (![self.book.PDFFileURL isFileURL]) {
-        NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book];
-        if (!pdfData) { NSLog(@"Sorry. This book is not available."); }
-        return;
-    }
-    
-    /** 2. Show pdf */
-    // Create  ReaderDocument
-    NSString *phrase = nil; // Document password (for unlocking most encrypted PDF files)
-    NSString *filePath = [self.book.PDFFileURL path];
-    NSLog(@"PDF filePath for ReaderDocument: %@", filePath);
-    
-    ReaderDocument *document = [ReaderDocument withDocumentFilePath:filePath password:phrase];
-    
-    // Push ReaderViewController
-    if (document != nil) { // Must have a valid ReaderDocument object in order to proceed with things
-        
-        DRGPDFReaderVC *pdfVC = [[DRGPDFReaderVC alloc] initWithReaderDocument:document];
-        
-        pdfVC.delegate = self; // Set the ReaderViewController delegate to self
-        [self.navigationController pushViewController:pdfVC animated:YES];
-        
-    } else  {
-        NSLog(@"%s [ReaderDocument withDocumentFilePath:'%@' password:'%@'] failed.", __FUNCTION__, filePath, phrase);
-    }
-}
+    DRGPDFReaderVC *pdfVC = [[DRGPDFReaderVC alloc] initWithBook:self.book];
+    [self.navigationController pushViewController:pdfVC animated:YES];
+ }
 
 - (IBAction)favoriteBtnPressed:(UIButton *)sender {
     
@@ -138,9 +115,7 @@
     self.tagListLbl.text = [self.book.tagList componentsJoinedByString:@", "];
     self.coverImageView.image = [DRGDownloadManager downloadCoverImageForBook:self.book];
     self.favoriteBtn.selected = self.book.isFavorite;
-    [self.readBtn setTitle:@"Read Book" forState:UIControlStateSelected];
-    [self.readBtn setTitle:@"Download Book" forState:UIControlStateNormal];
-    self.readBtn.selected = [self.book isPDFLocallyStored];
+    [self.readBtn setTitle:@"Read Book" forState:UIControlStateNormal];
 }
 
 #pragma mark - UISplitViewControllerDelegate
@@ -161,12 +136,6 @@
 - (void)libraryTableVC:(DRGLibraryTableVC *)libraryTableVC didSelectCharacter:(DRGBook *)book {
     self.book = book;
     [self updateViewContent];
-}
-
-#pragma mark - ReaderViewControllerDelegate methods
-
-- (void)dismissReaderViewController:(ReaderViewController *)viewController {
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

@@ -16,6 +16,10 @@
 
 - (NSArray *)parseJSONData:(NSData *)data {
     
+    if (!data) {
+        return nil;
+    }
+    
     NSError *error;
     id JSONObject = [NSJSONSerialization JSONObjectWithData:data
                                                     options:kNilOptions
@@ -37,6 +41,10 @@
 }
 
 - (NSArray *)parseJSONArray:(NSArray *)jsonArray {
+    
+    if (!jsonArray || ![jsonArray count]) {
+        return nil;
+    }
     
     NSMutableArray *books = [[NSMutableArray alloc] init];
     for (NSDictionary *dic in jsonArray) {

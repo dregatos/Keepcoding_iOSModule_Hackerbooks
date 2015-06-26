@@ -55,7 +55,7 @@
     self.coverImView.image = nil;  // placeholder
     self.titleLbl.text = nil;
     self.authorsLbl.text = nil;
-    self.favoriteBtn.selected = nil;
+    self.favoriteBtn.selected = NO;
 }
 
 #pragma mark - Helpers

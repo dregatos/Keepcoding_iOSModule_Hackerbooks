@@ -110,6 +110,10 @@
            withName:(NSString *)aName
        andExtension:(NSString *)aExtension {
     
+    if (!data || !folderURL || !aName || !aExtension) {
+        return nil;
+    }
+    
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     //check if the cache directory is writable

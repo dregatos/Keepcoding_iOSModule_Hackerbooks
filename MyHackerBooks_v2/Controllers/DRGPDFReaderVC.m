@@ -16,9 +16,22 @@
 
 @interface DRGPDFReaderVC () <ReaderViewControllerDelegate>
 
+@property (nonatomic, strong) DRGBook *book;
+@property (nonatomic, strong) ReaderViewController *readerVC;
+
 @end
 
 @implementation DRGPDFReaderVC
+
+#pragma mark - Init
+
+- (instancetype)initWithBook:(DRGBook *)aBook {
+    if (self = [super init]) {
+        _book = aBook;
+    }
+    return self;
+}
+
 
 #pragma mark - Notification
 
@@ -41,38 +54,11 @@
 // BOOK_WAS_SELECTED_NOTIFICATION_NAME
 - (void)notifySelectedBookDidChange:(NSNotification *)notification {
     
-    /*
     // Get updated book
-    DRGBook *newBook = notification.userInfo[BOOK_KEY];
-
-    // Update model
-    DRGBookDetailVC *parentVC = (DRGBookDetailVC *)[self.navigationController.viewControllers firstObject];
-    DRGLibrary *library = parentVC.library;
-    NSData *pdfData = [DRGDownloadManager downloadPDFForBook:newBook ofLibrary:library];
-    if (!pdfData) {
-        NSLog(@"Sorry. This book is not available.");
-        return;
-    }
+    self.book = notification.userInfo[BOOK_KEY];
     
-    NSString *phrase = nil; // Document password (for unlocking most encrypted PDF files)
-    NSString *filePath = [newBook.PDFFileURL path];
-    NSLog(@"PDF filePath for ReaderDocument: %@", filePath);
-    
-    ReaderDocument *document = [ReaderDocument withDocumentFilePath:filePath password:phrase];
-
-    // Update content view
-    if (document != nil) { // Must have a valid ReaderDocument object in order to proceed with things
-        
-        // NOTE: I could't find any method to reload the view's content...
-        
-    } else  {
-        NSLog(@"%s [ReaderDocument withDocumentFilePath:'%@' password:'%@'] failed.", __FUNCTION__, filePath, phrase);
-    }
-     */
-    
-    [self.delegate dismissReaderViewController:self];
+    [self updateViewContent];
 }
-
 
 #pragma mark - Lifecycle
 
@@ -80,14 +66,16 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
-//    self.navigationController.navigationBarHidden = YES;
-    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.navigationController.navigationBarHidden = YES;
+//    self.edgesForExtendedLayout = UIRectEdgeNone;
     
     [self updateViewContent];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
     
     // Notifications **********************
     [self registerForNotifications];
@@ -105,10 +93,48 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - ReaderViewControllerDelegate methods
+
+- (void)dismissReaderViewController:(ReaderViewController *)viewController {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 #pragma mark - Helpers
 
 - (void)updateViewContent {
+    // Get pdf
+    NSData *pdfData = [DRGDownloadManager downloadPDFForBook:self.book];
+    if (!pdfData) {
+        NSLog(@"Sorry. This book is not available.");
+        [[[UIAlertView alloc]initWithTitle:@"Sorry. This book is not available."
+                                   message:nil
+                                  delegate:self
+                         cancelButtonTitle:@"OK"
+                         otherButtonTitles:nil] show];
+        return;
+    }
     
+    // Create  ReaderDocument
+    NSString *phrase = nil; // Document password (for unlocking most encrypted PDF files)
+    NSString *filePath = [self.book.PDFFileURL path];
+    NSLog(@"PDF filePath for ReaderDocument: %@", filePath);
+    
+    ReaderDocument *document = [ReaderDocument withDocumentFilePath:filePath password:phrase];
+    
+    // Update content view
+    [self.readerVC.view removeFromSuperview];
+    if (document != nil) { // Must have a valid ReaderDocument object in order to proceed with things
+        
+        self.readerVC = nil;
+        self.readerVC = [[ReaderViewController alloc] initWithReaderDocument:document];
+        self.readerVC.delegate = self;
+        self.readerVC.view.frame = self.view.frame;
+        
+        [self.view addSubview:self.readerVC.view];
+        
+    } else  {
+        NSLog(@"%s [ReaderDocument withDocumentFilePath:'%@' password:'%@'] failed.", __FUNCTION__, filePath, phrase);
+    }
 }
 
 @end
